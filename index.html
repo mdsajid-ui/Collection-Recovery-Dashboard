@@ -956,8 +956,13 @@ function processWorkbookData(arrayBuffer, sourceName) {
         rec.recoveryRate = Number(rec.recoveryRate)|| (rec.committedFee? rec.paidAmount/rec.committedFee : 0);
         rec.payRate = rec.payRate || rec.recoveryRate;
         rec.balanceControlRatio = Number(rec.balanceControlRatio)||0;
-        rec.riskSegment = (rec.riskSegment||'Low Risk').toString().trim();
-        rec.finalStatus = (rec.finalStatus||(rec.balance>0? (rec.duration>3?'Default':'Pending') : 'Fully Paid')).toString().trim();
+        rec.riskSegment = (rec.riskSegment||'').toString().toUpperCase();
+        if(rec.riskSegment.includes('VERY') || rec.riskSegment.includes('HIGH')) rec.riskSegment = 'Very Critical';
+        else if(rec.riskSegment.includes('CRIT')) rec.riskSegment = 'Critical';
+        else if(rec.riskSegment.includes('MID') || rec.riskSegment.includes('MED')) rec.riskSegment = 'Mid Risk';
+        else rec.riskSegment = 'Low Risk';
+        
+        rec.finalStatus = rec.balance > 0 ? (rec.duration > 3 ? 'Default' : 'Pending') : 'Fully Paid';
         return rec;
       })
       .filter(Boolean);
