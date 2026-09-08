@@ -1010,62 +1010,47 @@ function renderLcPerformance(d) {
   const targetPerLC = 10;
   const revTargetPerLC = 3000000;
   
-  const SECTIONS = [
-    {key: "admissions", title: "Admissions & Productivity", kpis: (data) => {
-       const adm = data.reduce((a,x)=>a+x.admissions,0);
-       const target = data.length * targetPerLC;
-       return [
-         ["Total Admissions", adm],
-         ["Admissions Target", target]
-       ];
-    }},
-    {key: "revenue", title: "Revenue & Contribution", kpis: (data) => {
-       const rev = data.reduce((a,x)=>a+x.revenue,0);
-       const target = data.length * revTargetPerLC;
-       const adm = data.reduce((a,x)=>a+x.admissions,0);
-       const avgTicket = adm > 0 ? rev / adm : 0;
-       return [
-         ["Total Revenue", fmtINR(rev)],
-         ["Revenue Target", fmtINR(target)],
-         ["Avg Ticket Size", fmtINR(avgTicket)],
-         ["Revenue Contribution %", "100%"],
-         ["Revenue Growth %", "+12.4%"]
-       ];
-    }},
-    {key: "collection", title: "Collection & Recovery", kpis: (data) => {
-       const paid = data.reduce((a,x)=>a+x.paidAmount,0);
-       const outstanding = data.reduce((a,x)=>a+x.outstanding,0);
-       const overdue = outstanding * 0.15; 
-       const rev = data.reduce((a,x)=>a+x.revenue,0);
-       return [
-         ["Total Paid Amount", fmtINR(paid)],
-         ["Outstanding Amount", fmtINR(outstanding)],
-         ["Overdue Amount", fmtINR(overdue)],
-         ["Recovery Rate %", rev ? (paid/rev*100).toFixed(1)+"%" : "0%"]
-       ];
-    }},
-    {key: "quality", title: "Quality & Satisfaction", kpis: (data) => {
-       const active = data.reduce((a,x)=>a+x.activeStudents,0);
-       const disc = data.reduce((a,x)=>a+x.discontinued,0);
-       const adm = data.reduce((a,x)=>a+x.admissions,0);
-       return [
-         ["Active Students", active],
-         ["Discontinued Students", disc],
-         ["Discontinue %", adm ? (disc/adm*100).toFixed(1)+"%" : "0%"],
-         ["Refund Cases", "0"],
-         ["Student Satisfaction", "4.6/5"]
-       ];
-    }}
-  ];
+  const adm = lcData.reduce((a,x)=>a+x.admissions,0);
+  const rev = lcData.reduce((a,x)=>a+x.revenue,0);
+  const paid = lcData.reduce((a,x)=>a+x.paidAmount,0);
+  const active = lcData.reduce((a,x)=>a+x.activeStudents,0);
+  const disc = lcData.reduce((a,x)=>a+x.discontinued,0);
+  const outstanding = lcData.reduce((a,x)=>a+x.outstanding,0);
   
+  const targetAdm = lcData.length * targetPerLC;
+  const targetRev = lcData.length * revTargetPerLC;
+  const avgTicket = adm > 0 ? rev / adm : 0;
+  const overdue = outstanding * 0.15;
+
+  const FLAT_KPIS = [
+    {label: "Total Admissions", value: adm, icon: "👥", bg: "#1A202C", color: "#63B3ED"},
+    {label: "Admissions Target", value: targetAdm, icon: "🎯", bg: "#1A202C", color: "#F6AD55"},
+    {label: "Total Revenue", value: fmtINR(rev), icon: "💰", bg: "#1A202C", color: "#68D391"},
+    {label: "Revenue Target", value: fmtINR(targetRev), icon: "🎯", bg: "#1A202C", color: "#F6AD55"},
+    {label: "Avg Ticket Size", value: fmtINR(avgTicket), icon: "🎫", bg: "#1A202C", color: "#E53E3E"},
+    {label: "Revenue Contribution %", value: "100%", icon: "🥧", bg: "#1A202C", color: "#D6BCFA"},
+    {label: "Revenue Growth %", value: "+12.4%", icon: "📈", bg: "#1A202C", color: "#68D391"},
+    {label: "Total Paid Amount", value: fmtINR(paid), icon: "💸", bg: "#1A202C", color: "#68D391"},
+    {label: "Outstanding Amount", value: fmtINR(outstanding), icon: "⏳", bg: "#1A202C", color: "#F6AD55"},
+    {label: "Overdue Amount", value: fmtINR(overdue), icon: "⚠️", bg: "#1A202C", color: "#E53E3E"},
+    {label: "Recovery Rate %", value: rev ? (paid/rev*100).toFixed(1)+"%" : "0%", icon: "✅", bg: "#1A202C", color: "#68D391"},
+    {label: "Active Students", value: active, icon: "🎓", bg: "#1A202C", color: "#63B3ED"},
+    {label: "Discontinued Students", value: disc, icon: "📉", bg: "#1A202C", color: "#E53E3E"},
+    {label: "Discontinue %", value: adm ? (disc/adm*100).toFixed(1)+"%" : "0%", icon: "🛑", bg: "#1A202C", color: "#E53E3E"},
+    {label: "Refund Cases", value: "0", icon: "💸", bg: "#1A202C", color: "#A0AEC0"},
+    {label: "Student Satisfaction", value: "4.6/5", icon: "⭐", bg: "#1A202C", color: "#F6E05E"}
+  ];
+
   const host = document.getElementById("lcSectionsHost");
   if(host) {
-    host.innerHTML = "";
-    SECTIONS.forEach(sec => {
-      const kpis = sec.kpis(lcData);
-      let cards = kpis.map(k => `<div class="kpi"><div class="kpi-label">${k[0]}</div><div class="kpi-value">${k[1]}</div></div>`).join("");
-      host.innerHTML += `<div style="margin-bottom:16px;"><h3>${sec.title}</h3><div class="kpi-grid">${cards}</div></div>`;
-    });
+    let cards = FLAT_KPIS.map(k => `
+      <div class="kpi">
+        <div class="kpi-icon" style="background:rgba(255,255,255,0.04); color:${k.color}; text-shadow:0 0 10px ${k.color};">${k.icon}</div>
+        <div class="kpi-label">${k.label}</div>
+        <div class="kpi-value">${k.value}</div>
+      </div>
+    `).join("");
+    host.innerHTML = `<div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 24px;">${cards}</div>`;
   }
 }
 function renderAll(){
