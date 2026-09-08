@@ -353,6 +353,7 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
         <div class="filter-group"><label>Batch QTR</label><select id="fQtr"><option value="All">All</option></select></div>
         <div class="filter-group"><label>Course</label><select id="fCourse"><option value="All">All</option></select></div>
         <div class="filter-group"><label>Final Status</label><select id="fStatus"><option value="All">All</option></select></div>
+        <div class="filter-group"><label>LC Name</label><select id="fLcName"><option value="All">All</option></select></div>
       </div>
       <div class="asof">Data As On<b id="asOfDate">—</b></div>
     </div>
@@ -635,6 +636,7 @@ function populateFilters(){
     fYearMonth: unique(RAW,'batch'),
     fCourse: unique(RAW,'course'),
     fStatus: unique(RAW,'finalStatus'),
+    fLcName: unique(RAW,'consultant'),
   };
   Object.entries(sels).forEach(([id, vals])=>{
     const sel = document.getElementById(id);
@@ -670,6 +672,7 @@ function getFiltered(){
   const qtr = document.getElementById('fQtr').value;
   const course = document.getElementById('fCourse').value;
   const status = document.getElementById('fStatus').value;
+  const lcName = document.getElementById('fLcName').value;
   return RAW.filter(r=>{
     if(branch!=='All' && r.campus!==branch) return false;
     if(year!=='All' && String(r.batchYear)!==year) return false;
@@ -677,6 +680,7 @@ function getFiltered(){
     if(qtr!=='All' && yearMonthToQtr(r.batch)!==qtr) return false;
     if(course!=='All' && r.course!==course) return false;
     if(status!=='All' && r.finalStatus!==status) return false;
+    if(lcName!=='All' && r.consultant!==lcName) return false;
     return true;
   });
 }
@@ -1202,7 +1206,7 @@ function renderAll(){
   renderEnterpriseModules(data);
 }
 
-['fBranch','fYear','fYearMonth','fQtr','fCourse','fStatus'].forEach(id=>{
+['fBranch','fYear','fYearMonth','fQtr','fCourse','fStatus','fLcName'].forEach(id=>{
   document.getElementById(id).addEventListener('change', renderAll);
 });
 document.getElementById('searchBox').addEventListener('input', ()=>renderTable(getFiltered()));
@@ -1359,7 +1363,7 @@ async function loadLiveSheet() {
 }
 
 function resetFilterValuesToAll(){
-  ['fBranch','fYear','fYearMonth','fQtr','fCourse','fStatus'].forEach(id=>document.getElementById(id).value='All');
+  ['fBranch','fYear','fYearMonth','fQtr','fCourse','fStatus','fLcName'].forEach(id=>document.getElementById(id).value='All');
 }
 
 document.getElementById('btnUpload').addEventListener('click', ()=>document.getElementById('fileInput').click());
