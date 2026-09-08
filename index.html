@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -903,11 +903,11 @@ function renderLcPerformance(d) {
     return {...r, admissionScore, revenueScore, collectionScore, conversionScore, retentionScore, attendanceScore, total};
   }).sort((a,b) => b.total - a.total);
   
-  const html = rows.map((r,i) => \
-    <tr><td><b>\</b></td><td>\</td><td>\</td>
-    <td>\</td><td>\%</td><td>\</td><td>\</td>
-    <td>\</td><td><b>\</b></td><td>#\</td></tr>
-  \).join("");
+  const html = rows.map((r,i) => `
+    <tr><td><b>${r.name}</b></td><td>${r.admissions}</td><td>${fmtINR(r.revenue)}</td>
+    <td>${fmtINR(r.paidAmount)}</td><td>${r.collectionScore.toFixed(0)}%</td><td>${r.conversionScore.toFixed(0)}</td><td>${r.retentionScore.toFixed(0)}</td>
+    <td>${r.attendanceScore}</td><td><b>${r.total}</b></td><td>#${i+1}</td></tr>
+  `).join("");
   const tbody = document.getElementById("lcScorecardBody");
   if(tbody) tbody.innerHTML = html || "<tr><td colspan='10'>No data</td></tr>";
 
@@ -948,8 +948,8 @@ function renderLcPerformance(d) {
     host.innerHTML = "";
     SECTIONS.forEach(sec => {
       const kpis = sec.kpis(lcData);
-      let cards = kpis.map(k => \<div class="kpi"><div class="kpi-label">\</div><div class="kpi-value">\</div></div>\).join("");
-      host.innerHTML += \<div style="margin-bottom:16px;"><h3>\</h3><div class="kpi-grid">\</div></div>\;
+      let cards = kpis.map(k => `<div class="kpi"><div class="kpi-label">${k[0]}</div><div class="kpi-value">${k[1]}</div></div>`).join("");
+      host.innerHTML += `<div style="margin-bottom:16px;"><h3>${sec.title}</h3><div class="kpi-grid">${cards}</div></div>`;
     });
   }
 }
