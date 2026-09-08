@@ -927,57 +927,79 @@ function normalizeExcelDate(val){
   return val;
 }
 
+function processWorkbookData(arrayBuffer, sourceName) {
+  try {
+    const wb = XLSX.read(arrayBuffer, {type:'array', cellDates:true});
+    const sheetName = wb.SheetNames.find(n=>/data/i.test(n)) || wb.SheetNames[0];
+    const ws = wb.Sheets[sheetName];
+    const json = XLSX.utils.sheet_to_json(ws, {defval:null});
+    const cleaned = json
+      .map((row,idx)=>{
+        const rec = {};
+        Object.keys(row).forEach(k=>{
+          const norm = k.trim().toLowerCase();
+          const target = COLUMN_MAP[norm];
+          if(target) rec[target] = row[k];
+        });
+        if(!rec.name && !rec.course) return null; // skip junk/empty rows
+        const parseMoney = v => typeof v === 'number' ? v : Number(String(v).replace(/[^0-9.-]+/g, '')) || 0;
+        rec.id = rec.id || `UPL${1000+idx}`;
+        rec.batchYear = Number(rec.batchYear)||rec.batchYear;
+        rec.batch = Number(rec.batch)||rec.batch;
+        rec.committedFee = parseMoney(rec.committedFee);
+        rec.paidAmount = parseMoney(rec.paidAmount);
+        rec.balance = parseMoney(rec.balance);
+        rec.tuitionFee = parseMoney(rec.tuitionFee)||rec.committedFee;
+        rec.discount = parseMoney(rec.discount);
+        rec.duration = Number(rec.duration)||0;
+        rec.discountRate = parseMoney(rec.discountRate);
+        rec.recoveryRate = Number(rec.recoveryRate)|| (rec.committedFee? rec.paidAmount/rec.committedFee : 0);
+        rec.payRate = rec.payRate || rec.recoveryRate;
+        rec.balanceControlRatio = Number(rec.balanceControlRatio)||0;
+        rec.riskSegment = (rec.riskSegment||'Low Risk').toString().trim();
+        rec.finalStatus = (rec.finalStatus||(rec.balance>0? (rec.duration>3?'Default':'Pending') : 'Fully Paid')).toString().trim();
+        return rec;
+      })
+      .filter(Boolean);
+    if(!cleaned.length){
+      document.getElementById('uploadStatus').textContent = `No usable rows found in ${sourceName}.`;
+      return;
+    }
+    RAW = cleaned;
+    populateFilters();
+    resetFilterValuesToAll();
+    renderAll();
+    document.getElementById('uploadStatus').textContent = `Loaded ${cleaned.length} record(s) from "${sourceName}".`;
+  } catch(err) {
+    console.error(err);
+    document.getElementById('uploadStatus').textContent = 'Could not parse this data — please check the format.';
+  }
+}
+
 function parseWorkbook(file){
   const reader = new FileReader();
   reader.onload = (e)=>{
-    try{
-      const wb = XLSX.read(e.target.result, {type:'array', cellDates:true});
-      const sheetName = wb.SheetNames.find(n=>/data/i.test(n)) || wb.SheetNames[0];
-      const ws = wb.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(ws, {defval:null});
-      const cleaned = json
-        .map((row,idx)=>{
-          const rec = {};
-          Object.keys(row).forEach(k=>{
-            const norm = k.trim().toLowerCase();
-            const target = COLUMN_MAP[norm];
-            if(target) rec[target] = row[k];
-          });
-          if(!rec.name && !rec.course) return null; // skip junk/empty rows
-          const parseMoney = v => typeof v === 'number' ? v : Number(String(v).replace(/[^0-9.-]+/g, '')) || 0;
-          rec.id = rec.id || `UPL${1000+idx}`;
-          rec.batchYear = Number(rec.batchYear)||rec.batchYear;
-          rec.batch = Number(rec.batch)||rec.batch;
-          rec.committedFee = parseMoney(rec.committedFee);
-          rec.paidAmount = parseMoney(rec.paidAmount);
-          rec.balance = parseMoney(rec.balance);
-          rec.tuitionFee = parseMoney(rec.tuitionFee)||rec.committedFee;
-          rec.discount = parseMoney(rec.discount);
-          rec.duration = Number(rec.duration)||0;
-          rec.discountRate = parseMoney(rec.discountRate);
-          rec.recoveryRate = Number(rec.recoveryRate)|| (rec.committedFee? rec.paidAmount/rec.committedFee : 0);
-          rec.payRate = rec.payRate || rec.recoveryRate;
-          rec.balanceControlRatio = Number(rec.balanceControlRatio)||0;
-          rec.riskSegment = (rec.riskSegment||'Low Risk').toString().trim();
-          rec.finalStatus = (rec.finalStatus||(rec.balance>0? (rec.duration>3?'Default':'Pending') : 'Fully Paid')).toString().trim();
-          return rec;
-        })
-        .filter(Boolean);
-      if(!cleaned.length){
-        document.getElementById('uploadStatus').textContent = 'No usable rows found in the uploaded file.';
-        return;
-      }
-      RAW = cleaned;
-      populateFilters();
-      resetFilterValuesToAll();
-      renderAll();
-      document.getElementById('uploadStatus').textContent = `Loaded ${cleaned.length} record(s) from "${file.name}".`;
-    }catch(err){
-      console.error(err);
-      document.getElementById('uploadStatus').textContent = 'Could not parse this file — please check the format.';
-    }
+    processWorkbookData(e.target.result, file.name);
   };
   reader.readAsArrayBuffer(file);
+}
+
+async function loadLiveSheet() {
+  document.getElementById('uploadStatus').textContent = 'Fetching live data from Google Sheets...';
+  try {
+    const LIVE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1z7897mcMyPRWyvRiXG5tPziXkLnkaE_6/export?format=xlsx";
+    const response = await fetch(LIVE_SHEET_URL);
+    if (!response.ok) throw new Error("Network error fetching live sheet");
+    const arrayBuffer = await response.arrayBuffer();
+    processWorkbookData(arrayBuffer, "Live Google Sheet");
+  } catch (error) {
+    console.error("Live fetch error:", error);
+    document.getElementById('uploadStatus').textContent = 'Failed to load live sheet. Using embedded sample data.';
+    RAW = JSON.parse(JSON.stringify(SAMPLE_DATA));
+    populateFilters();
+    resetFilterValuesToAll();
+    renderAll();
+  }
 }
 
 function resetFilterValuesToAll(){
@@ -1232,8 +1254,7 @@ document.getElementById('reportGrid').addEventListener('click',e=>{const op=e.ta
 
 /* ============ INIT ============ */
 applyTheme(sessionStorage.getItem('ipmsTheme')||'black-gold');
-populateFilters();
-renderAll();
+loadLiveSheet();
 renderPaymentsLog();
 </script>
 </body>
