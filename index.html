@@ -554,6 +554,10 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
         <div class="chart-box"><h3>Course Wise Performance</h3><div class="chart-wrap"><canvas id="lcChartCourse"></canvas></div></div>
         <div class="chart-box"><h3>Collection Analysis (Aging)</h3><div class="chart-wrap"><canvas id="lcChartAging"></canvas></div></div>
       </div>
+      <div class="grid-2">
+        <div class="chart-box"><h3>Admissions Trend (by Batch)</h3><div class="chart-wrap"><canvas id="lcChartAdmTrend"></canvas></div></div>
+        <div class="chart-box"><h3>Revenue Trend (by Batch)</h3><div class="chart-wrap"><canvas id="lcChartRevTrend"></canvas></div></div>
+      </div>
     </div>
     <!-- LC SCORECARD SECTION -->
     <div class="section" id="lcScorecardSection" style="display:none;">
@@ -898,7 +902,7 @@ function getLcData(students) {
 
 let lcCharts = {};
 function renderLcCharts(lcData, rawStudents) {
-  ['top10','bottom10','course','aging'].forEach(k => {
+  ['top10','bottom10','course','aging','admTrend','revTrend'].forEach(k => {
     if(lcCharts[k]){ lcCharts[k].destroy(); delete lcCharts[k]; }
   });
 
@@ -978,6 +982,63 @@ function renderLcCharts(lcData, rawStudents) {
         datasets:[{data:[b0,b30,b60,b90],backgroundColor:['#00C896','#F4D03F','#E6B566','#E6394F'],borderWidth:0}]
       },
       options:{responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{legend:{position:'right',labels:{color:'#8FA5C4'}}}}
+    });
+  }
+
+  // Trend Charts (by Batch)
+  const byBatch = {};
+  rawStudents.forEach(s => {
+    const b = s.batch || 'Unknown';
+    if (!byBatch[b]) byBatch[b] = { adm: 0, rev: 0 };
+    byBatch[b].adm++;
+    byBatch[b].rev += (Number(s.committedFee) || 0);
+  });
+  
+  // Sort batches numerically or alphabetically
+  const batchKeys = Object.keys(byBatch).filter(k => k !== 'Unknown').sort();
+  if (byBatch['Unknown']) batchKeys.push('Unknown');
+
+  if(document.getElementById('lcChartAdmTrend')) {
+    lcCharts.admTrend = new Chart(document.getElementById('lcChartAdmTrend'), {
+      type: 'line',
+      data: {
+        labels: batchKeys,
+        datasets: [{
+          label: 'Admissions',
+          data: batchKeys.map(k => byBatch[k].adm),
+          borderColor: '#63B3ED',
+          backgroundColor: 'rgba(99, 179, 237, 0.1)',
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: '#1A202C',
+          pointBorderColor: '#63B3ED',
+          pointRadius: 4,
+          pointBorderWidth: 2
+        }]
+      },
+      options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, beginAtZero: true, callback: v=>v } } }
+    });
+  }
+
+  if(document.getElementById('lcChartRevTrend')) {
+    lcCharts.revTrend = new Chart(document.getElementById('lcChartRevTrend'), {
+      type: 'line',
+      data: {
+        labels: batchKeys,
+        datasets: [{
+          label: 'Revenue (₹)',
+          data: batchKeys.map(k => byBatch[k].rev),
+          borderColor: '#68D391',
+          backgroundColor: 'rgba(104, 211, 145, 0.1)',
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: '#1A202C',
+          pointBorderColor: '#68D391',
+          pointRadius: 4,
+          pointBorderWidth: 2
+        }]
+      },
+      options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, beginAtZero: true } } }
     });
   }
 }
