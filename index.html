@@ -894,6 +894,8 @@ showOnlySection('top');
 
 /* ============ EXCEL UPLOAD ============ */
 const COLUMN_MAP = {
+  'stu_id': 'id', 'stu_name': 'name', 'tution fee': 'tuitionFee', 'committed fee': 'committedFee',
+  'risk segment 20211213': 'riskSegment', 'status': 'finalStatus',
   'student id':'id','id':'id','student name':'name','name':'name',
   'campus':'campus','branch':'campus','branch name':'campus',
   'course':'course','batch_year':'batchYear','batch year':'batchYear',
@@ -942,16 +944,17 @@ function parseWorkbook(file){
             if(target) rec[target] = row[k];
           });
           if(!rec.name && !rec.course) return null; // skip junk/empty rows
+          const parseMoney = v => typeof v === 'number' ? v : Number(String(v).replace(/[^0-9.-]+/g, '')) || 0;
           rec.id = rec.id || `UPL${1000+idx}`;
           rec.batchYear = Number(rec.batchYear)||rec.batchYear;
           rec.batch = Number(rec.batch)||rec.batch;
-          rec.committedFee = Number(rec.committedFee)||0;
-          rec.paidAmount = Number(rec.paidAmount)||0;
-          rec.balance = Number(rec.balance)||0;
-          rec.tuitionFee = Number(rec.tuitionFee)||rec.committedFee;
-          rec.discount = Number(rec.discount)||0;
+          rec.committedFee = parseMoney(rec.committedFee);
+          rec.paidAmount = parseMoney(rec.paidAmount);
+          rec.balance = parseMoney(rec.balance);
+          rec.tuitionFee = parseMoney(rec.tuitionFee)||rec.committedFee;
+          rec.discount = parseMoney(rec.discount);
           rec.duration = Number(rec.duration)||0;
-          rec.discountRate = Number(rec.discountRate)||0;
+          rec.discountRate = parseMoney(rec.discountRate);
           rec.recoveryRate = Number(rec.recoveryRate)|| (rec.committedFee? rec.paidAmount/rec.committedFee : 0);
           rec.payRate = rec.payRate || rec.recoveryRate;
           rec.balanceControlRatio = Number(rec.balanceControlRatio)||0;
