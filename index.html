@@ -944,8 +944,8 @@ function processWorkbookData(arrayBuffer, sourceName) {
         if(!rec.name && !rec.course) return null; // skip junk/empty rows
         const parseMoney = v => typeof v === 'number' ? v : Number(String(v).replace(/[^0-9.-]+/g, '')) || 0;
         rec.id = rec.id || `UPL${1000+idx}`;
-        rec.batchYear = Number(rec.batchYear)||rec.batchYear;
         rec.batch = Number(rec.batch)||rec.batch;
+        rec.batchYear = Number(rec.batchYear) || (rec.batch ? Math.floor(Number(rec.batch)/100) : new Date().getFullYear());
         rec.committedFee = parseMoney(rec.committedFee);
         rec.paidAmount = parseMoney(rec.paidAmount);
         rec.balance = parseMoney(rec.balance);
