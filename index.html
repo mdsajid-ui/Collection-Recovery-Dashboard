@@ -1099,7 +1099,7 @@ function renderLcPerformance(d) {
        title: "Top Visual Cards",
        cols: 4,
        kpis: [
-         {label: "Today's Collection", value: fmtINR(todayCol), icon: "🟢"},
+         {label: "Total Collection", value: fmtINR(totalPaid), icon: "🟢"},
          {label: "This Month Collection", value: fmtINR(monthCol), icon: "🟢"},
          {label: "Collection Achievement %", value: collectionAchievement.toFixed(1)+"%", icon: "🟡"},
          {label: "Total Outstanding", value: fmtINR(totalBal), icon: "🔴"},
@@ -1113,7 +1113,7 @@ function renderLcPerformance(d) {
        title: "Executive Summary KPIs",
        cols: 6,
        kpis: [
-         {label: "Today's Collection", value: fmtINR(todayCol), icon: "📅"},
+         {label: "Total Collection", value: fmtINR(totalPaid), icon: "📅"},
          {label: "This Week Collection", value: fmtINR(weekCol), icon: "📅"},
          {label: "This Month Collection", value: fmtINR(monthCol), icon: "📅"},
          {label: "YTD Collection", value: fmtINR(totalPaid), icon: "📅"},
