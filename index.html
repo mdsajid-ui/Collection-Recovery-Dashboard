@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -332,6 +332,8 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
     <div class="nav-item" data-target="paymentsSection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Payments</div>
     <div class="nav-item" data-target="recoverySection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>Recovery Actions</div>
     <div class="nav-item" data-target="reportsSection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Reports</div>
+    <div class="nav-item" data-target="lcExecSection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M3 10a7 7 0 1 1 14 0 7 7 0 0 1-14 0Z"/></svg>LC Executive</div>
+    <div class="nav-item" data-target="lcScorecardSection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>LC Scorecard</div>
     <div class="nav-item" data-target="exportSection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Data Export</div>
     <div class="nav-item" data-target="settingsSection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Settings</div>
   </aside>
@@ -342,7 +344,7 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
     <div class="topbar">
       <div>
         <h1>Collection &amp; Recovery Dashboard</h1>
-        <p>Track | Control | Recover | Improve Cash Flow — DV Analytics</p>
+        <p>Track | Control | Recover | Improve Cash Flow â€” DV Analytics</p>
       </div>
       <div class="filters" id="filterBar">
         <div class="filter-group"><label>Branch</label><select id="fBranch"><option value="All">All</option></select></div>
@@ -352,16 +354,16 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
         <div class="filter-group"><label>Course</label><select id="fCourse"><option value="All">All</option></select></div>
         <div class="filter-group"><label>Final Status</label><select id="fStatus"><option value="All">All</option></select></div>
       </div>
-      <div class="asof">Data As On<b id="asOfDate">—</b></div>
+      <div class="asof">Data As On<b id="asOfDate">â€”</b></div>
     </div>
 
     <div class="actions-row">
-      <button class="btn primary" id="btnUpload">⭱ Upload Excel</button>
+      <button class="btn primary" id="btnUpload">â­± Upload Excel</button>
       <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
-      <button class="btn" id="btnResetData">↺ Reset to Sample Data</button>
-      <button class="btn" id="btnExportExcel">⬇ Export Excel</button>
-      <button class="btn" id="btnExportPdf">⬇ Export PDF</button>
-      <button class="btn" id="btnTheme">◐ Toggle Theme</button>
+      <button class="btn" id="btnResetData">â†º Reset to Sample Data</button>
+      <button class="btn" id="btnExportExcel">â¬‡ Export Excel</button>
+      <button class="btn" id="btnExportPdf">â¬‡ Export PDF</button>
+      <button class="btn" id="btnTheme">â— Toggle Theme</button>
       <span id="uploadStatus" style="align-self:center;color:var(--txt-dim);font-size:12px;"></span>
     </div>
 
@@ -383,7 +385,7 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
       </div>
       <div class="grid-2" style="margin-bottom:16px;">
         <div class="chart-box"><h3>No. of Accounts by Risk Segment</h3><div class="chart-wrap"><canvas id="chartRiskCount"></canvas></div></div>
-        <div class="chart-box"><h3>Balance Amount by Risk Segment (₹)</h3><div class="chart-wrap"><canvas id="chartRiskBalance"></canvas></div></div>
+        <div class="chart-box"><h3>Balance Amount by Risk Segment (â‚¹)</h3><div class="chart-wrap"><canvas id="chartRiskBalance"></canvas></div></div>
       </div>
       <div class="grid-2">
         <div class="chart-box"><h3>% of Accounts by Risk Segment</h3><div class="chart-wrap"><canvas id="chartRiskCountPct"></canvas></div></div>
@@ -400,7 +402,7 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
       </div>
       <div class="grid-2">
         <div class="chart-box"><h3>Course Wise Students by Final Status</h3><div class="chart-wrap tall"><canvas id="chartCourseStatusCount"></canvas></div></div>
-        <div class="chart-box"><h3>Course Wise Balance by Final Status (₹)</h3><div class="chart-wrap tall"><canvas id="chartCourseStatusBalance"></canvas></div></div>
+        <div class="chart-box"><h3>Course Wise Balance by Final Status (â‚¹)</h3><div class="chart-wrap tall"><canvas id="chartCourseStatusBalance"></canvas></div></div>
       </div>
     </div>
 
@@ -409,15 +411,15 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
       <div class="section-title"><h2>Trend Analysis</h2><span class="hint">By batch year-month</span></div>
       <div class="grid-2" style="margin-bottom:16px;">
         <div class="chart-box"><h3>Accounts Trend by Risk Segment</h3><div class="chart-wrap"><canvas id="chartTrendAccounts"></canvas></div></div>
-        <div class="chart-box"><h3>Balance Trend by Risk Segment (₹)</h3><div class="chart-wrap"><canvas id="chartTrendBalance"></canvas></div></div>
+        <div class="chart-box"><h3>Balance Trend by Risk Segment (â‚¹)</h3><div class="chart-wrap"><canvas id="chartTrendBalance"></canvas></div></div>
       </div>
-      <div class="chart-box"><h3>Month Wise Paid Amount vs Balance Amount (₹)</h3><div class="chart-wrap"><canvas id="chartMonthPaidBalance"></canvas></div></div>
+      <div class="chart-box"><h3>Month Wise Paid Amount vs Balance Amount (â‚¹)</h3><div class="chart-wrap"><canvas id="chartMonthPaidBalance"></canvas></div></div>
     </div>
 
     <!-- TABLE SECTION -->
     <div class="section" id="tableSection">
       <div class="section-title"><h2>Student Level Collection Tracker</h2>
-        <div class="filter-group"><input type="text" id="searchBox" placeholder="Search student, batch, course…" style="min-width:220px;"></div>
+        <div class="filter-group"><input type="text" id="searchBox" placeholder="Search student, batch, courseâ€¦" style="min-width:220px;"></div>
       </div>
       <div class="table-scroll">
         <table>
@@ -427,9 +429,9 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
               <th data-key="name">Student Name</th>
               <th data-key="batch">Batch</th>
               <th data-key="course">Course</th>
-              <th data-key="committedFee">Committed Fee (₹)</th>
-              <th data-key="paidAmount">Paid Amount (₹)</th>
-              <th data-key="balance">Balance (₹)</th>
+              <th data-key="committedFee">Committed Fee (â‚¹)</th>
+              <th data-key="paidAmount">Paid Amount (â‚¹)</th>
+              <th data-key="balance">Balance (â‚¹)</th>
               <th data-key="duration">Duration (mo.)</th>
               <th data-key="riskSegment">Risk Segment</th>
               <th data-key="finalStatus">Final Status</th>
@@ -443,7 +445,7 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
 
     <!-- PAYMENTS SECTION -->
     <div class="section" id="paymentsSection">
-      <div class="section-title"><h2>Payments — Record Fee Collection</h2>
+      <div class="section-title"><h2>Payments â€” Record Fee Collection</h2>
         <span class="hint">Enter a student ID to auto-fill their committed fee &amp; balance</span>
       </div>
       <div class="mini-kpi-grid" id="paymentKpis"></div>
@@ -462,7 +464,7 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
           </div>
           <div class="fee-field">
             <label for="feCommittedFee">Committed Fee<span class="req">*</span></label>
-            <input type="text" id="feCommittedFee" placeholder="₹0" readonly>
+            <input type="text" id="feCommittedFee" placeholder="â‚¹0" readonly>
           </div>
           <div class="fee-field">
             <label for="feBatch">Batch<span class="req">*</span></label>
@@ -474,7 +476,7 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
           </div>
           <div class="fee-field">
             <label for="feBalance">Balance<span class="req">*</span></label>
-            <input type="text" id="feBalance" placeholder="₹0" readonly>
+            <input type="text" id="feBalance" placeholder="â‚¹0" readonly>
           </div>
           <div class="fee-field">
             <label for="feAmount">Amount<span class="req">*</span></label>
@@ -507,7 +509,7 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
           </div>
         </div>
         <div class="fee-actions">
-          <button type="submit" class="btn primary fe-submit">✓ Record Payment</button>
+          <button type="submit" class="btn primary fe-submit">âœ“ Record Payment</button>
           <button type="reset" class="btn" id="feClear">Clear Form</button>
           <span id="feStatus" class="fe-status"></span>
         </div>
@@ -522,7 +524,7 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
           <thead>
             <tr>
               <th>Date</th><th>Student ID</th><th>Student Name</th><th>Batch</th><th>Course</th>
-              <th>Amount (₹)</th><th>Mode</th><th>Balance After (₹)</th><th>Remarks</th>
+              <th>Amount (â‚¹)</th><th>Mode</th><th>Balance After (â‚¹)</th><th>Remarks</th>
             </tr>
           </thead>
           <tbody id="feLogBody"></tbody>
@@ -538,6 +540,27 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
     </div>
 
     <!-- REPORTS -->
+
+    <!-- LC EXEC SUMMARY SECTION -->
+    <div class="section" id="lcExecSection" style="display:none;">
+      <div class="section-title"><h2>LC Executive Summary</h2><span class="hint">Consultant Performance Metrics</span></div>
+      <div id="lcSectionsHost"></div>
+    </div>
+
+    <!-- LC SCORECARD SECTION -->
+    <div class="section" id="lcScorecardSection" style="display:none;">
+      <div class="section-title"><h2>LC Scorecard</h2></div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>LC Name</th><th>Admission</th><th>Revenue (₹)</th><th>Collection (₹)</th><th>Collection %</th><th>Conversion Score</th><th>Retention Score</th><th>Attendance</th><th>Total Score</th><th>Rank</th>
+            </tr>
+          </thead>
+          <tbody id="lcScorecardBody"></tbody>
+        </table>
+      </div>
+    </div>
     <div class="section" id="reportsSection"><div class="module-intro"><div><div class="eyebrow">Reporting suite</div><div class="section-title" style="margin:4px 0 0"><h2>Reports Center</h2></div><p>Ready-to-share management reports based on the active dashboard filters.</p></div></div><div class="report-grid" id="reportGrid"></div></div>
 
     <!-- EXPORT -->
@@ -554,7 +577,7 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
     <div class="section" id="settingsSection"><div class="module-intro"><div><div class="eyebrow">Workspace preferences</div><div class="section-title" style="margin:4px 0 0"><h2>Settings</h2></div><p>Personalise your dashboard experience. Preferences are saved for this browser session.</p></div></div>
       <div class="settings-grid">
         <div class="setting-row"><div><h3>Theme</h3><p>Choose a premium dashboard colour system.</p></div><select id="themeSelect"><option value="black-gold">Black Gold</option><option value="ivory">Ivory Gold</option><option value="sapphire">Sapphire Blue</option><option value="emerald">Emerald Green</option><option value="royal-blue">Royal Blue</option><option value="pink">Pink</option></select></div>
-        <div class="setting-row"><div><h3>Currency</h3><p>Display currency across collection views.</p></div><select id="settingCurrency"><option>INR (₹)</option><option>USD ($)</option><option>EUR (€)</option></select></div>
+        <div class="setting-row"><div><h3>Currency</h3><p>Display currency across collection views.</p></div><select id="settingCurrency"><option>INR (â‚¹)</option><option>USD ($)</option><option>EUR (â‚¬)</option></select></div>
         <div class="setting-row"><div><h3>Language</h3><p>Dashboard display language.</p></div><select><option>English</option><option>Hindi</option></select></div>
         <div class="setting-row"><div><h3>Date format</h3><p>Preferred operational date view.</p></div><select><option>DD-MM-YYYY</option><option>MM-DD-YYYY</option><option>YYYY-MM-DD</option></select></div>
         <div class="setting-row"><div><h3>Notifications</h3><p>Follow-up and recovery reminders.</p></div><input class="switch" type="checkbox" checked></div>
@@ -583,7 +606,7 @@ const charts = {};
 const RISK_ORDER = ["Very Critical","Critical","Mid Risk","Low Risk"];
 const RISK_COLOR = {"Very Critical":"#E6394F","Critical":"#E8A23D","Mid Risk":"#F4D03F","Low Risk":"#33C481"};
 const STATUS_COLOR = {"Fully Paid":"#33C481","Pending":"#F4D03F","Default":"#E6394F"};
-const fmtINR = n => "₹" + (Math.round(n||0)).toLocaleString('en-IN');
+const fmtINR = n => "â‚¹" + (Math.round(n||0)).toLocaleString('en-IN');
 const fmtPct = n => ((n||0)*100).toFixed(1) + "%";
 const slug = s => String(s).replace(/\s+/g,'-');
 
@@ -682,24 +705,24 @@ function renderKPIs(data){
   const k = computeKPIs(data);
   const grid = document.getElementById('kpiGrid');
   grid.innerHTML = [
-    kpiCard('👥','#FFD700','Total Accounts', k.totalAccounts.toLocaleString('en-IN')),
-    kpiCard('💰','#F4D03F','Total Tuition Fee', fmtINR(k.totalTuition)),
-    kpiCard('📄','#E6B566','Total Committed Fee', fmtINR(k.totalCommitted)),
-    kpiCard('🏷️','#E6B566','Total Discount', fmtINR(k.totalDiscount)),
+    kpiCard('ðŸ‘¥','#FFD700','Total Accounts', k.totalAccounts.toLocaleString('en-IN')),
+    kpiCard('ðŸ’°','#F4D03F','Total Tuition Fee', fmtINR(k.totalTuition)),
+    kpiCard('ðŸ“„','#E6B566','Total Committed Fee', fmtINR(k.totalCommitted)),
+    kpiCard('ðŸ·ï¸','#E6B566','Total Discount', fmtINR(k.totalDiscount)),
     kpiCard('%','#C9A8FF','Discounted Rate', fmtPct(k.discountedRate)),
-    kpiCard('✅','#33C481','Total Paid Amount', fmtINR(k.totalPaid)),
-    kpiCard('📊','#E8A23D','Total Balance', fmtINR(k.totalBalance)),
-    kpiCard('🥧','#33C481','Paid %', fmtPct(k.paidPct)),
-    kpiCard('🥧','#E6394F','Balance %', fmtPct(k.balancePct)),
-    kpiCard('⚠️','#E6394F','Default Accounts', k.defaultAccounts.toLocaleString('en-IN')),
-    kpiCard('💸','#E6394F','Default Balance', fmtINR(k.defaultBalance)),
+    kpiCard('âœ…','#33C481','Total Paid Amount', fmtINR(k.totalPaid)),
+    kpiCard('ðŸ“Š','#E8A23D','Total Balance', fmtINR(k.totalBalance)),
+    kpiCard('ðŸ¥§','#33C481','Paid %', fmtPct(k.paidPct)),
+    kpiCard('ðŸ¥§','#E6394F','Balance %', fmtPct(k.balancePct)),
+    kpiCard('âš ï¸','#E6394F','Default Accounts', k.defaultAccounts.toLocaleString('en-IN')),
+    kpiCard('ðŸ’¸','#E6394F','Default Balance', fmtINR(k.defaultBalance)),
     kpiCard('%','#E6394F','Default Balance %', fmtPct(k.defaultPct)),
-    kpiCard('⏳','#F4D03F','Pending Accounts', k.pendingAccounts.toLocaleString('en-IN')),
-    kpiCard('💵','#F4D03F','Pending Balance', fmtINR(k.pendingBalance)),
+    kpiCard('â³','#F4D03F','Pending Accounts', k.pendingAccounts.toLocaleString('en-IN')),
+    kpiCard('ðŸ’µ','#F4D03F','Pending Balance', fmtINR(k.pendingBalance)),
     kpiCard('%','#F4D03F','Pending Balance %', fmtPct(k.pendingPct)),
-    kpiCard('🔄','#33C481','Recovery Rate', fmtPct(k.recoveryRate)),
-    kpiCard('💹','#FFD700','Pay Rate', fmtPct(k.payRate)),
-    kpiCard('⚖️','#E6B566','Balance Control Ratio', k.balanceControlRatio.toFixed(2)),
+    kpiCard('ðŸ”„','#33C481','Recovery Rate', fmtPct(k.recoveryRate)),
+    kpiCard('ðŸ’¹','#FFD700','Pay Rate', fmtPct(k.payRate)),
+    kpiCard('âš–ï¸','#E6B566','Balance Control Ratio', k.balanceControlRatio.toFixed(2)),
   ].join('');
   document.getElementById('kpiCount').textContent = `${data.length} record(s) matched`;
 }
@@ -736,7 +759,7 @@ function renderRiskCharts(data){
     options:{plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(255,215,0,.08)'}}}}});
 
   makeChart('chartRiskBalance', {type:'bar', data:{labels, datasets:[{data:balances, backgroundColor:colors, borderRadius:6}]},
-    options:{plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmtINR(c.raw)}}}, scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(255,215,0,.08)'},ticks:{callback:v=>'₹'+(v/1000)+'K'}}}}});
+    options:{plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmtINR(c.raw)}}}, scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(255,215,0,.08)'},ticks:{callback:v=>'â‚¹'+(v/1000)+'K'}}}}});
 
   makeChart('chartRiskCountPct', {type:'doughnut', data:{labels, datasets:[{data:counts, backgroundColor:colors, borderWidth:0}]},
     options:{plugins:{legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} (${(c.raw/totalCount*100).toFixed(1)}%)`}}}, cutout:'62%'}});
@@ -778,7 +801,7 @@ function renderCourseCharts(data){
 
   const statusBalData = statuses.map(st=>courses.map(c=> sum(byCourse[c].filter(r=>r.finalStatus===st),'balance') ));
   makeChart('chartCourseStatusBalance', {type:'bar', data:{labels:courses, datasets:statuses.map((st,i)=>({label:st, data:statusBalData[i], backgroundColor:STATUS_COLOR[st], borderRadius:4}))},
-    options:{indexAxis:'y', plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmtINR(c.raw)}`}}}, scales:{x:{stacked:true, grid:{color:'rgba(255,215,0,.08)'}, ticks:{callback:v=>'₹'+(v/1000)+'K'}}, y:{stacked:true, grid:{display:false}}}}});
+    options:{indexAxis:'y', plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmtINR(c.raw)}`}}}, scales:{x:{stacked:true, grid:{color:'rgba(255,215,0,.08)'}, ticks:{callback:v=>'â‚¹'+(v/1000)+'K'}}, y:{stacked:true, grid:{display:false}}}}});
 }
 
 /* ---- Trend charts (by batch year-month) ---- */
@@ -798,14 +821,14 @@ function renderTrendCharts(data){
     data: months.map(m => sum((byMonth[m]||[]).filter(r=>r.riskSegment===risk),'balance'))
   }));
   makeChart('chartTrendBalance', {type:'line', data:{labels:months, datasets:trendBalance},
-    options:{plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmtINR(c.raw)}`}}}, scales:{y:{beginAtZero:true, grid:{color:'rgba(255,215,0,.08)'}, ticks:{callback:v=>'₹'+(v/1000)+'K'}}, x:{grid:{display:false}}}}});
+    options:{plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmtINR(c.raw)}`}}}, scales:{y:{beginAtZero:true, grid:{color:'rgba(255,215,0,.08)'}, ticks:{callback:v=>'â‚¹'+(v/1000)+'K'}}, x:{grid:{display:false}}}}});
 
   const paidByMonth = months.map(m=>sum(byMonth[m],'paidAmount'));
   const balByMonth = months.map(m=>sum(byMonth[m],'balance'));
   makeChart('chartMonthPaidBalance', {type:'bar', data:{labels:months, datasets:[
     {label:'Paid Amount', data:paidByMonth, backgroundColor:'#33C481', borderRadius:6},
     {label:'Balance Amount', data:balByMonth, backgroundColor:'#E6394F', borderRadius:6}
-  ]}, options:{plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmtINR(c.raw)}`}}}, scales:{y:{grid:{color:'rgba(255,215,0,.08)'}, ticks:{callback:v=>'₹'+(v/1000)+'K'}}, x:{grid:{display:false}}}}});
+  ]}, options:{plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmtINR(c.raw)}`}}}, scales:{y:{grid:{color:'rgba(255,215,0,.08)'}, ticks:{callback:v=>'â‚¹'+(v/1000)+'K'}}, x:{grid:{display:false}}}}});
 }
 
 /* ---- Student table ---- */
@@ -839,8 +862,100 @@ function renderTable(data){
 }
 
 /* ============ MASTER RENDER ============ */
+function getLcData(students) {
+  const groups = {};
+  students.forEach(s => {
+    const key = s.consultant || s.name || "Unassigned"; // Fallback to name if consultant not specifically mapped, though CSV has consultant
+    if (!groups[key]) {
+      groups[key] = {
+        name: key, admissions: 0, revenue: 0, paidAmount: 0, discontinued: 0,
+        leads: 0, contacted: 0, demoGiven: 0, refundCases: 0, satisfaction: 4,
+        attendanceScore: 80, admissionsTarget: 0, revenueTarget: 0
+      };
+    }
+    groups[key].admissions++;
+    groups[key].revenue += (Number(s.committedFee) || 0);
+    groups[key].paidAmount += (Number(s.paidAmount) || 0);
+    if(s.finalStatus === "Default" || String(s.riskSegment).toLowerCase() === "dropped") {
+       groups[key].discontinued++;
+    }
+  });
+  return Object.values(groups).map(g => {
+    g.activeStudents = Math.max(0, g.admissions - g.discontinued);
+    g.outstanding = Math.max(0, g.revenue - g.paidAmount);
+    return g;
+  });
+}
+
+function renderLcPerformance(d) {
+  const lcData = getLcData(d);
+  
+  // Scorecard
+  const rows = lcData.map(r => {
+    const admissionScore = Math.min(100, r.admissions > 0 ? 100 : 0); // Placeholder
+    const revenueScore = Math.min(100, r.revenue > 0 ? 100 : 0); // Placeholder
+    const collectionScore = Math.min(100, r.revenue > 0 ? (r.paidAmount / r.revenue) * 100 : 0);
+    const conversionScore = 85; // Mock
+    const retentionScore = Math.min(100, r.admissions > 0 ? (r.activeStudents / r.admissions) * 100 : 0);
+    const attendanceScore = r.attendanceScore;
+    const total = +((admissionScore + revenueScore + collectionScore + conversionScore + retentionScore + attendanceScore) / 6).toFixed(1);
+    
+    return {...r, admissionScore, revenueScore, collectionScore, conversionScore, retentionScore, attendanceScore, total};
+  }).sort((a,b) => b.total - a.total);
+  
+  const html = rows.map((r,i) => \
+    <tr><td><b>\</b></td><td>\</td><td>\</td>
+    <td>\</td><td>\%</td><td>\</td><td>\</td>
+    <td>\</td><td><b>\</b></td><td>#\</td></tr>
+  \).join("");
+  const tbody = document.getElementById("lcScorecardBody");
+  if(tbody) tbody.innerHTML = html || "<tr><td colspan='10'>No data</td></tr>";
+
+  // Exec Summary
+  const SECTIONS = [
+    {key: "admissions", title: "Admissions & Productivity", kpis: (data) => {
+       const adm = data.reduce((a,x)=>a+x.admissions,0);
+       const leads = adm * 5; 
+       return [
+         ["Total Admissions", adm],
+         ["Estimated Leads", leads],
+         ["Conversion %", leads ? (adm/leads*100).toFixed(1)+"%" : "0%"]
+       ];
+    }},
+    {key: "revenue", title: "Revenue & Collection", kpis: (data) => {
+       const rev = data.reduce((a,x)=>a+x.revenue,0);
+       const paid = data.reduce((a,x)=>a+x.paidAmount,0);
+       return [
+         ["Total Revenue", fmtINR(rev)],
+         ["Total Paid Amount", fmtINR(paid)],
+         ["Collection %", rev ? (paid/rev*100).toFixed(1)+"%" : "0%"]
+       ];
+    }},
+    {key: "quality", title: "Quality & Retention", kpis: (data) => {
+       const adm = data.reduce((a,x)=>a+x.admissions,0);
+       const active = data.reduce((a,x)=>a+x.activeStudents,0);
+       const disc = data.reduce((a,x)=>a+x.discontinued,0);
+       return [
+         ["Active Students", active],
+         ["Discontinued Students", disc],
+         ["Retention %", adm ? (active/adm*100).toFixed(1)+"%" : "0%"]
+       ];
+    }}
+  ];
+  
+  const host = document.getElementById("lcSectionsHost");
+  if(host) {
+    host.innerHTML = "";
+    SECTIONS.forEach(sec => {
+      const kpis = sec.kpis(lcData);
+      let cards = kpis.map(k => \<div class="kpi"><div class="kpi-label">\</div><div class="kpi-value">\</div></div>\).join("");
+      host.innerHTML += \<div style="margin-bottom:16px;"><h3>\</h3><div class="kpi-grid">\</div></div>\;
+    });
+  }
+}
 function renderAll(){
   const data = getFiltered();
+  renderLcPerformance(data);
   renderKPIs(data);
   if(data.length){
     renderRiskCharts(data);
@@ -902,8 +1017,8 @@ const COLUMN_MAP = {
   'batch':'batch','batch ':'batch','batch month':'batch',
   'batch details':'batchDetails','consultant':'consultant','manager name':'manager',
   'lead source':'leadSource','tuition fees':'tuitionFee','committed fees':'committedFee',
-  'committed fee (₹)':'committedFee','discount':'discount','discounted rate':'discountRate',
-  'paid amount':'paidAmount','paid amount (₹)':'paidAmount','balance':'balance','balance (₹)':'balance',
+  'committed fee (â‚¹)':'committedFee','discount':'discount','discounted rate':'discountRate',
+  'paid amount':'paidAmount','paid amount (â‚¹)':'paidAmount','balance':'balance','balance (â‚¹)':'balance',
   'balance %':'balancePct','duration':'duration','duration (mo.)':'duration',
   'risk segment':'riskSegment','risk segment ':'riskSegment',
   'default accounts':'defaultAccounts','default balance':'defaultBalance',
@@ -977,7 +1092,7 @@ function processWorkbookData(arrayBuffer, sourceName) {
     document.getElementById('uploadStatus').textContent = `Loaded ${cleaned.length} record(s) from "${sourceName}".`;
   } catch(err) {
     console.error(err);
-    document.getElementById('uploadStatus').textContent = 'Could not parse this data — please check the format.';
+    document.getElementById('uploadStatus').textContent = 'Could not parse this data â€” please check the format.';
   }
 }
 
@@ -1046,7 +1161,7 @@ function applyTheme(theme){
   if(theme==='royal-blue') document.body.classList.add('theme-royal-blue');
   if(theme==='pink') document.body.classList.add('theme-pink');
   document.getElementById('themeSelect').value=theme;
-  document.getElementById('btnTheme').textContent='◐ '+THEME_NAMES[theme];
+  document.getElementById('btnTheme').textContent='â— '+THEME_NAMES[theme];
   sessionStorage.setItem('ipmsTheme',theme);
 }
 document.getElementById('btnTheme').addEventListener('click', ()=>{
@@ -1099,7 +1214,7 @@ document.getElementById('feStudentId').addEventListener('input', (e)=>{
   } else if(e.target.value.trim()){
     document.getElementById('feCommittedFee').value = '';
     document.getElementById('feBalance').value = '';
-    feStatus.textContent = 'New student ID — fill batch, course & committed fee manually below.';
+    feStatus.textContent = 'New student ID â€” fill batch, course & committed fee manually below.';
     feStatus.className = 'fe-status';
   } else {
     document.getElementById('feCommittedFee').value = '';
@@ -1117,7 +1232,7 @@ function renderPaymentsLog(){
   body.innerHTML = PAYMENTS_LOG.map(p=>`
     <tr>
       <td>${p.date}</td><td>${p.studentId}</td><td>${p.studentName}</td><td>${p.batch}</td><td>${p.course}</td>
-      <td>${fmtINR(p.amount)}</td><td>${p.mode}</td><td>${fmtINR(p.balanceAfter)}</td><td>${p.remarks||'—'}</td>
+      <td>${fmtINR(p.amount)}</td><td>${p.mode}</td><td>${fmtINR(p.balanceAfter)}</td><td>${p.remarks||'â€”'}</td>
     </tr>`).join('') || `<tr><td colspan="9" class="empty-msg">No payments recorded this session yet.</td></tr>`;
   document.getElementById('feLogCount').textContent = PAYMENTS_LOG.length ? `${PAYMENTS_LOG.length} payment(s) recorded` : '';
 }
@@ -1155,7 +1270,7 @@ document.getElementById('feeForm').addEventListener('submit', (e)=>{
     balanceAfter = stu.balance;
     committedFee = stu.committedFee;
   } else {
-    // Unknown student ID — create a fresh record from the form inputs
+    // Unknown student ID â€” create a fresh record from the form inputs
     const committedFeeInput = Number(String(document.getElementById('feCommittedFee').value).replace(/[^\d.]/g,'')) || amount;
     balanceAfter = Math.max(committedFeeInput - amount, 0);
     committedFee = committedFeeInput;
@@ -1213,7 +1328,7 @@ function renderEnterpriseModules(data){
   const totalPaid=sum(data,'paidAmount'), pending=sum(data,'balance'), today=new Date().toISOString().slice(0,10);
   const todayPaid=PAYMENTS_LOG.filter(p=>p.date===today.split('-').reverse().join('-')).reduce((a,p)=>a+p.amount,0);
   const monthPaid=PAYMENTS_LOG.filter(p=>p.date&&p.date.slice(3,10)===today.slice(5,7)+'-'+today.slice(0,4)).reduce((a,p)=>a+p.amount,0);
-  document.getElementById('paymentKpis').innerHTML=[['Total Collection',fmtINR(totalPaid)],['Today’s Collection',fmtINR(todayPaid)],['Monthly Collection',fmtINR(monthPaid||totalPaid)],['Pending Payments',fmtINR(pending)]].map(x=>`<div class="mini-kpi"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('');
+  document.getElementById('paymentKpis').innerHTML=[['Total Collection',fmtINR(totalPaid)],['Todayâ€™s Collection',fmtINR(todayPaid)],['Monthly Collection',fmtINR(monthPaid||totalPaid)],['Pending Payments',fmtINR(pending)]].map(x=>`<div class="mini-kpi"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('');
   const modes=groupAmount(PAYMENTS_LOG,'mode'); document.getElementById('paymentModeAnalysis').innerHTML=meterRows(Object.entries(modes).sort((a,b)=>b[1]-a[1]).slice(0,5));
   const branches=Object.entries(groupAmount(data,'campus')).sort((a,b)=>b[1]-a[1]).slice(0,3); const consultants=Object.entries(groupAmount(data,'consultant')).sort((a,b)=>b[1]-a[1]).slice(0,3); document.getElementById('paymentTeamAnalysis').innerHTML='<div class="eyebrow">By branch</div>'+meterRows(branches)+'<div class="eyebrow" style="margin-top:5px">By consultant</div>'+meterRows(consultants);
   const priority=data.filter(r=>Number(r.balance)>0).sort((a,b)=>(RISK_ORDER.indexOf(a.riskSegment)-RISK_ORDER.indexOf(b.riskSegment))||(b.balance-a.balance)).slice(0,8);
@@ -1222,11 +1337,11 @@ function renderEnterpriseModules(data){
   document.getElementById('recoveryBody').innerHTML=priority.map((r,i)=>{const prog=Math.min(100,Math.round((Number(r.paidAmount)||0)/Math.max(1,Number(r.committedFee)||1)*100));const exec=esc(r.consultant||'Recovery Desk');return `<tr data-id="${esc(r.id)}"><td><b>${esc(r.name)}</b><br><small>${esc(r.id)}</small></td><td><span class="risk-pill risk-${slug(r.riskSegment)}">${esc(r.riskSegment)}</span><br><small>Priority ${i+1}</small></td><td>${fmtINR(r.balance)}</td><td><span class="status-dot ${r.finalStatus==='Fully Paid'?'complete':'alert'}"></span>${r.finalStatus==='Fully Paid'?'Resolved':'Follow-up due'}</td><td>${i%2?'Yesterday':'Not contacted'}</td><td>${i%2?'Today':'Tomorrow'}</td><td>${exec}</td><td><div class="meter"><i style="width:${prog}%"></i></div><small>${prog}% paid</small></td><td><div class="action-set"><button class="micro-btn" data-action="Call">Call</button><button class="micro-btn" data-action="WhatsApp">WhatsApp</button><button class="micro-btn" data-action="Email">Email</button><button class="micro-btn" data-action="Mark Follow-up">Follow-up</button><button class="micro-btn" data-action="Mark Paid">Mark paid</button></div></td></tr>`;}).join('')||'<tr><td colspan="9" class="empty-msg">No accounts require recovery action under the active filters.</td></tr>';
 }
 const reportNames=['Daily Report','Weekly Report','Monthly Report','Quarterly Report','Branch Report','Course Report','Consultant Report','Recovery Report','Payment Report','Student Report'];
-document.getElementById('reportGrid').innerHTML=reportNames.map((name,i)=>`<article class="report-card"><div><div class="report-icon">${['◫','◷','◉','◇'][i%4]}</div><h3>${name}</h3></div><div class="report-actions"><button class="micro-btn" data-report="view">View</button><button class="micro-btn" data-report="xlsx">Excel</button><button class="micro-btn" data-report="pdf">PDF</button><button class="micro-btn" data-report="print">Print</button></div></article>`).join('');
+document.getElementById('reportGrid').innerHTML=reportNames.map((name,i)=>`<article class="report-card"><div><div class="report-icon">${['â—«','â—·','â—‰','â—‡'][i%4]}</div><h3>${name}</h3></div><div class="report-actions"><button class="micro-btn" data-report="view">View</button><button class="micro-btn" data-report="xlsx">Excel</button><button class="micro-btn" data-report="pdf">PDF</button><button class="micro-btn" data-report="print">Print</button></div></article>`).join('');
 function downloadText(content,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);}
 function exportRecords(format){const scope=document.querySelector('input[name="exportScope"]:checked').value;if(scope==='visual'||format==='pdf'){window.print();return;}const data=scope==='all'?RAW:getFiltered();if(format==='xlsx'){const ws=XLSX.utils.json_to_sheet(data);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Collection Data');XLSX.writeFile(wb,'Collection_Recovery_Export.xlsx');}if(format==='json')downloadText(JSON.stringify(data,null,2),'Collection_Recovery_Export.json','application/json');if(format==='csv'){const keys=Object.keys(data[0]||{});downloadText([keys.join(','),...data.map(r=>keys.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(','))].join('\n'),'Collection_Recovery_Export.csv','text/csv');}}
 document.getElementById('exportOptions').addEventListener('change',e=>{document.querySelectorAll('.export-card').forEach(x=>x.classList.toggle('selected',x.contains(e.target)&&e.target.checked));});
-document.querySelectorAll('[data-export]').forEach(b=>b.addEventListener('click',()=>{const shell=document.getElementById('exportProgress'),bar=document.getElementById('exportProgressBar'),status=document.getElementById('exportStatus');shell.classList.add('show');bar.style.width='12%';status.textContent='Preparing secure download…';setTimeout(()=>{bar.style.width='100%';exportRecords(b.dataset.export);status.textContent='Download ready.';setTimeout(()=>{shell.classList.remove('show');bar.style.width='0';},700)},280);}));
+document.querySelectorAll('[data-export]').forEach(b=>b.addEventListener('click',()=>{const shell=document.getElementById('exportProgress'),bar=document.getElementById('exportProgressBar'),status=document.getElementById('exportStatus');shell.classList.add('show');bar.style.width='12%';status.textContent='Preparing secure downloadâ€¦';setTimeout(()=>{bar.style.width='100%';exportRecords(b.dataset.export);status.textContent='Download ready.';setTimeout(()=>{shell.classList.remove('show');bar.style.width='0';},700)},280);}));
 function openWhatsAppReminder(rec, btn){
   if(!rec){ alert('Could not find this student record.'); return; }
   let phone=(rec.phone||rec.whatsapp||rec.mobile||'').toString().replace(/\D/g,'');
@@ -1239,7 +1354,7 @@ function openWhatsAppReminder(rec, btn){
   const dueLine = Number(rec.balance)>0 ? `pending fee balance of ${fmtINR(rec.balance)}` : 'fee account';
   const msg = `Hi ${rec.name}, this is a follow-up from DV Analytics regarding your ${dueLine}${rec.course? ' for the '+rec.course+' course':''}. Kindly clear the dues at the earliest, or reach out if you have any questions. Thank you.`;
   window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-  if(btn){ const original=btn.textContent; btn.textContent='Opened ✓'; setTimeout(()=>btn.textContent=original,1200); }
+  if(btn){ const original=btn.textContent; btn.textContent='Opened âœ“'; setTimeout(()=>btn.textContent=original,1200); }
 }
 document.getElementById('recoveryBody').addEventListener('click',e=>{
   if(!e.target.dataset.action)return;
@@ -1250,7 +1365,7 @@ document.getElementById('recoveryBody').addEventListener('click',e=>{
     openWhatsAppReminder(rec, e.target);
     return;
   }
-  e.target.textContent=label==='Mark Paid'?'Paid ✓':'Logged ✓';setTimeout(()=>e.target.textContent=label,1000);
+  e.target.textContent=label==='Mark Paid'?'Paid âœ“':'Logged âœ“';setTimeout(()=>e.target.textContent=label,1000);
 });
 document.getElementById('btnRecoveryRefresh').addEventListener('click',()=>renderEnterpriseModules(getFiltered()));
 document.getElementById('layoutReset').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
