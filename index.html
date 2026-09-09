@@ -1609,19 +1609,30 @@ function renderEnterpriseModules(data){
   document.getElementById('recoveryKpis').innerHTML=[['High Risk Students',critical.length],['Critical Accounts',data.filter(r=>r.riskSegment==='Very Critical').length],['Recovery Priority',priority.length?'Immediate':'Clear'],['Open Balance',fmtINR(sum(priority,'balance'))]].map(x=>`<div class="mini-kpi"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('');
   document.getElementById('recoveryBody').innerHTML=priority.map((r,i)=>{const prog=Math.min(100,Math.round((Number(r.paidAmount)||0)/Math.max(1,Number(r.committedFee)||1)*100));const exec=esc(r.consultant||'Recovery Desk');return `<tr data-id="${esc(r.id)}"><td><b>${esc(r.name)}</b><br><small>${esc(r.id)}</small></td><td><span class="risk-pill risk-${slug(r.riskSegment)}">${esc(r.riskSegment)}</span><br><small>Priority ${i+1}</small></td><td>${fmtINR(r.balance)}</td><td><span class="status-dot ${r.finalStatus==='Fully Paid'?'complete':'alert'}"></span>${r.finalStatus==='Fully Paid'?'Resolved':'Follow-up due'}</td><td>${i%2?'Yesterday':'Not contacted'}</td><td>${i%2?'Today':'Tomorrow'}</td><td>${exec}</td><td><div class="meter"><i style="width:${prog}%"></i></div><small>${prog}% paid</small></td><td><div class="action-set"><button class="micro-btn" data-action="Call">Call</button><button class="micro-btn" data-action="WhatsApp">WhatsApp</button><button class="micro-btn" data-action="Email">Email</button><button class="micro-btn" data-action="Mark Follow-up">Follow-up</button><button class="micro-btn" data-action="Mark Paid">Mark paid</button></div></td></tr>`;}).join('')||'<tr><td colspan="9" class="empty-msg">No accounts require recovery action under the active filters.</td></tr>';
 }
+const reportNames=['Daily Report','Weekly Report','Monthly Report','Quarterly Report','Branch Report','Course Report','Consultant Report','Recovery Report','Payment Report','Student Report'];
+let genericCards = reportNames.map((name,i)=>`<article class="report-card"><div><div class="report-icon">${['📅','📊','📈','📋'][i%4]}</div><h3>${name}</h3></div><div class="report-actions"><button class="micro-btn" data-report="view">View</button><button class="micro-btn" data-report="xlsx">Excel</button><button class="micro-btn" data-report="pdf">PDF</button><button class="micro-btn" data-report="print">Print</button></div></article>`).join('');
+
 const lcs = unique(RAW, 'consultant').filter(Boolean).sort();
-document.getElementById('reportGrid').innerHTML = lcs.map(lc => `
-  <article class="report-card">
+const lcOptions = lcs.map(lc => `<option value="${lc}">${lc}</option>`).join('');
+
+let lcCard = `
+  <article class="report-card" style="border: 1px solid var(--primary);">
     <div>
       <div class="report-icon">👨‍💼</div>
-      <h3>${lc} Performance Report</h3>
-      <p style="font-size:11px;color:var(--txt-dim);margin-top:4px;">Full dashboard export</p>
+      <h3>LC Dashboard Report</h3>
+      <p style="font-size:11px;color:var(--txt-dim);margin-top:4px;">Download full HD dashboard</p>
+      <select id="lcReportSelector" style="width:100%; margin-top:10px; background:var(--bg-body); color:var(--txt-main); border:1px solid rgba(255,255,255,0.2); padding:6px; border-radius:4px; font-size:12px;">
+        <option value="">Select an LC...</option>
+        ${lcOptions}
+      </select>
     </div>
     <div class="report-actions">
-      <button class="micro-btn" style="width:100%;text-align:center;justify-content:center;background:var(--primary);color:#000;" onclick="downloadLcReport('${lc}')">📥 Download HD Report</button>
+      <button class="micro-btn" style="width:100%;text-align:center;justify-content:center;background:var(--primary);color:#000;padding:6px;font-weight:bold;" onclick="const val=document.getElementById('lcReportSelector').value; if(val) downloadLcReport(val); else alert('Please select an LC first.');">📥 Download HD Report</button>
     </div>
   </article>
-`).join('');
+`;
+
+document.getElementById('reportGrid').innerHTML = lcCard + genericCards;
 
 window.downloadLcReport = function(lcName) {
   const fLcName = document.getElementById('fLcName');
