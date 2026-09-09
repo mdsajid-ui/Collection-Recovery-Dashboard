@@ -774,6 +774,7 @@ function renderKPIs(data){
 
 /* ============ CHART HELPERS ============ */
 Chart.defaults.color = '#BDBDBD';
+Chart.defaults.maintainAspectRatio = false;
 Chart.defaults.font.family = "Inter, Segoe UI, Roboto, Arial, sans-serif";
 Chart.defaults.plugins.legend.labels.boxWidth = 10;
 Chart.defaults.plugins.legend.labels.font = {size:10.5};
@@ -1692,6 +1693,7 @@ window.downloadLcReport = function(lcName) {
     
     applyTheme(prevTheme);
     Chart.defaults.color = '#BDBDBD';
+Chart.defaults.maintainAspectRatio = false;
     fLcName.value = prevVal;
     renderAll();
     showOnlySection('reportsSection');
