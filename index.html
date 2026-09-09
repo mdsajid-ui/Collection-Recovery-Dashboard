@@ -304,6 +304,11 @@ body.theme-royal-blue{--bg-0:#090B35;--bg-1:#111650;--card:#14184D;--card-2:#1C2
 body.theme-royal-blue .sidebar{background:linear-gradient(180deg,#111650,#070921);}body.theme-royal-blue .brand-badge{color:#090B35;}body.theme-royal-blue thead th{background:#1C2264;}
 body.theme-pink{--bg-0:#240714;--bg-1:#3A0E24;--card:#40102A;--card-2:#551535;--border:rgba(255,129,184,.32);--border-soft:rgba(255,129,184,.16);--glow:rgba(255,129,184,.27);--gold:#FF9FCB;--gold-2:#F262A1;--rose-gold:#FFD0E4;--champagne:#FFE1EF;--txt:#FFF7FB;--txt-dim:#F0C2D6;--txt-faint:#B9849E;}
 body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}body.theme-pink .brand-badge{color:#240714;}body.theme-pink thead th{background:#551535;}
+body.theme-pure-dark{--bg-0:#09090B;--bg-1:#18181B;--card:#18181B;--card-2:#27272A;--border:rgba(255,255,255,.1);--border-soft:rgba(255,255,255,.05);--glow:rgba(59,130,246,.25);--gold:#3B82F6;--gold-2:#2563EB;--rose-gold:#60A5FA;--champagne:#93C5FD;--txt:#F4F4F5;--txt-dim:#A1A1AA;--txt-faint:#71717A;}
+body.theme-pure-dark .sidebar{background:linear-gradient(180deg,#18181B,#09090B);}body.theme-pure-dark .brand-badge{color:#09090B;}body.theme-pure-dark thead th{background:#27272A;}
+body.theme-pure-white{--bg-0:#F1F5F9;--bg-1:#FFFFFF;--card:#FFFFFF;--card-2:#F8FAFC;--border:rgba(0,0,0,.1);--border-soft:rgba(0,0,0,.05);--glow:rgba(79,70,229,.15);--gold:#4F46E5;--gold-2:#4338CA;--rose-gold:#6366F1;--champagne:#818CF8;--txt:#0F172A;--txt-dim:#475569;--txt-faint:#94A3B8;}
+body.theme-pure-white .sidebar{background:linear-gradient(180deg,#F8FAFC,#FFFFFF);}body.theme-pure-white .brand-badge{box-shadow:0 0 16px rgba(0,0,0,.1);}body.theme-pure-white thead th{background:#F8FAFC;}body.theme-pure-white .kpi,body.theme-pure-white .chart-box,body.theme-pure-white .analytics-panel{background:linear-gradient(160deg,#fff,#f8fafc);}
+body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: initial; color: #0F172A; }
 
 @media print {
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -610,7 +615,7 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
     <!-- SETTINGS -->
     <div class="section" id="settingsSection"><div class="module-intro"><div><div class="eyebrow">Workspace preferences</div><div class="section-title" style="margin:4px 0 0"><h2>Settings</h2></div><p>Personalise your dashboard experience. Preferences are saved for this browser session.</p></div></div>
       <div class="settings-grid">
-        <div class="setting-row"><div><h3>Theme</h3><p>Choose a premium dashboard colour system.</p></div><select id="themeSelect"><option value="black-gold">Black Gold</option><option value="ivory">Ivory Gold</option><option value="sapphire">Sapphire Blue</option><option value="emerald">Emerald Green</option><option value="royal-blue">Royal Blue</option><option value="pink">Pink</option></select></div>
+        <div class="setting-row"><div><h3>Theme</h3><p>Choose a premium dashboard colour system.</p></div><select id="themeSelect"><option value="black-gold">Black Gold</option><option value="ivory">Ivory Gold</option><option value="sapphire">Sapphire Blue</option><option value="emerald">Emerald Green</option><option value="royal-blue">Royal Blue</option><option value="pink">Pink</option><option value="pure-dark">Pure Dark</option><option value="pure-white">Pure White</option></select></div>
         <div class="setting-row"><div><h3>Currency</h3><p>Display currency across collection views.</p></div><select id="settingCurrency"><option>INR (₹)</option><option>USD ($)</option><option>EUR (€)</option></select></div>
         <div class="setting-row"><div><h3>Language</h3><p>Dashboard display language.</p></div><select><option>English</option><option>Hindi</option></select></div>
         <div class="setting-row"><div><h3>Date format</h3><p>Preferred operational date view.</p></div><select><option>DD-MM-YYYY</option><option>MM-DD-YYYY</option><option>YYYY-MM-DD</option></select></div>
@@ -1448,20 +1453,22 @@ document.getElementById('btnExportExcel').addEventListener('click', ()=>{
 });
 document.getElementById('btnExportPdf').addEventListener('click', ()=>window.print());
 
-const THEME_NAMES={"black-gold":"Black Gold",ivory:"Ivory Gold",sapphire:"Sapphire Blue",emerald:"Emerald Green","royal-blue":"Royal Blue",pink:"Pink"};
+const THEME_NAMES={"black-gold":"Black Gold",ivory:"Ivory Gold",sapphire:"Sapphire Blue",emerald:"Emerald Green","royal-blue":"Royal Blue",pink:"Pink","pure-dark":"Pure Dark","pure-white":"Pure White"};
 function applyTheme(theme){
-  document.body.classList.remove('light-theme','theme-ivory','theme-sapphire','theme-emerald','theme-royal-blue','theme-pink');
+  document.body.classList.remove('light-theme','theme-ivory','theme-sapphire','theme-emerald','theme-royal-blue','theme-pink','theme-pure-dark','theme-pure-white');
   if(theme==='ivory') document.body.classList.add('theme-ivory');
   if(theme==='sapphire') document.body.classList.add('theme-sapphire');
   if(theme==='emerald') document.body.classList.add('theme-emerald');
   if(theme==='royal-blue') document.body.classList.add('theme-royal-blue');
   if(theme==='pink') document.body.classList.add('theme-pink');
+  if(theme==='pure-dark') document.body.classList.add('theme-pure-dark');
+  if(theme==='pure-white') document.body.classList.add('theme-pure-white');
   document.getElementById('themeSelect').value=theme;
   document.getElementById('btnTheme').textContent='◐ '+THEME_NAMES[theme];
   sessionStorage.setItem('ipmsTheme',theme);
 }
 document.getElementById('btnTheme').addEventListener('click', ()=>{
-  const themes=['black-gold','ivory','sapphire','emerald','royal-blue','pink'];
+  const themes=['black-gold','ivory','sapphire','emerald','royal-blue','pink','pure-dark','pure-white'];
   const current=document.getElementById('themeSelect').value;
   applyTheme(themes[(themes.indexOf(current)+1)%themes.length]);
 });
