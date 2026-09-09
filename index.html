@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -418,8 +418,8 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
         <div class="chart-box"><h3>Course Wise Students Count &amp; %</h3><div class="chart-wrap"><canvas id="chartCourseCount"></canvas></div></div>
       </div>
       <div class="grid-2">
-        <div class="chart-box"><h3>Course Wise Students by Final Status</h3><div class="chart-wrap tall"><canvas id="chartCourseStatusCount"></canvas></div></div>
-        <div class="chart-box"><h3>Course Wise Balance by Final Status (₹)</h3><div class="chart-wrap tall"><canvas id="chartCourseStatusBalance"></canvas></div></div>
+        <div class="chart-box"><h3>Course Wise Students by Final Status</h3><div class="chart-wrap"><canvas id="chartCourseStatusCount"></canvas></div></div>
+        <div class="chart-box"><h3>Course Wise Balance by Final Status (₹)</h3><div class="chart-wrap"><canvas id="chartCourseStatusBalance"></canvas></div></div>
       </div>
     </div>
 
@@ -807,10 +807,10 @@ function renderRiskCharts(data){
     options:{plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmtINR(c.raw)}}}, scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(255,215,0,.08)'},ticks:{callback:v=>'₹'+(v/1000)+'K'}}}}});
 
   makeChart('chartRiskCountPct', {type:'doughnut', data:{labels, datasets:[{data:counts, backgroundColor:colors, borderWidth:0}]},
-    options:{plugins:{legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} (${(c.raw/totalCount*100).toFixed(1)}%)`}}}, cutout:'62%'}});
+    options:{plugins:{legend:{position:'right',labels:{color:'var(--txt-dim)'}}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} (${(c.raw/totalCount*100).toFixed(1)}%)`}}}, cutout:'62%'}});
 
   makeChart('chartRiskBalancePct', {type:'doughnut', data:{labels, datasets:[{data:balances, backgroundColor:colors, borderWidth:0}]},
-    options:{plugins:{legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>`${c.label}: ${fmtINR(c.raw)} (${(c.raw/totalBal*100).toFixed(1)}%)`}}}, cutout:'62%'}});
+    options:{plugins:{legend:{position:'right',labels:{color:'var(--txt-dim)'}}, tooltip:{callbacks:{label:c=>`${c.label}: ${fmtINR(c.raw)} (${(c.raw/totalBal*100).toFixed(1)}%)`}}}, cutout:'62%'}});
 }
 
 /* ---- Course wise charts ---- */
@@ -824,7 +824,7 @@ function renderCourseCharts(data){
     return committed? paid/committed : 0;
   });
   makeChart('chartCoursePaidPct', {type:'doughnut', data:{labels:courses, datasets:[{data:paidPctByCourse.map(v=>Math.round(v*1000)/10), backgroundColor:palette}]},
-    options:{plugins:{legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}%`}}}, cutout:'55%'}});
+    options:{plugins:{legend:{position:'right',labels:{color:'var(--txt-dim)'}}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}%`}}}, cutout:'55%'}});
 
   const counts = courses.map(c=>byCourse[c].length);
   const totalStudents = counts.reduce((a,b)=>a+b,0)||1;
