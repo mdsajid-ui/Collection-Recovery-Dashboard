@@ -316,8 +316,12 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
   .app { grid-template-columns: 1fr; padding: 0 !important; margin: 0 !important; display: block !important; }
   .main { padding: 10px !important; margin: 0 !important; display: block !important; }
   .section { break-inside: auto !important; margin-bottom: 20px; }
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr) !important; gap: 10px; }
-  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+    /* Flexbox is required for Chrome PDF engine to wrap rows correctly across page breaks */
+  .kpi-grid { display: flex !important; flex-wrap: wrap !important; gap: 10px; }
+  .kpi { width: calc(25% - 10px) !important; }
+  .grid-2 { display: flex !important; flex-wrap: wrap !important; gap: 10px; }
+  .grid-2 > .chart-box { width: calc(50% - 10px) !important; }
+  .section-title { break-after: avoid !important; page-break-after: avoid !important; }
   .chart-box, .kpi { break-inside: avoid !important; }
   .table-scroll { max-height: none !important; overflow: visible !important; }
   table { width: 100% !important; border-collapse: collapse; page-break-inside: auto; }
