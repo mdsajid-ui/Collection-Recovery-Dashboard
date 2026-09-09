@@ -311,7 +311,7 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
 @media print {
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   @page { size: landscape; margin: 5mm; }
-  body { background: #000 !important; }
+  body { background: var(--bg-0) !important; color: var(--txt) !important; }
   .sidebar, .actions-row, .filters, .asof, .topbar { display: none !important; }
   .app { grid-template-columns: 1fr; padding: 0 !important; margin: 0 !important; display: block !important; }
   .main { padding: 10px !important; margin: 0 !important; display: block !important; }
@@ -1660,46 +1660,39 @@ let lcCard = `
 document.getElementById('reportGrid').innerHTML = lcCard + genericCards;
 
 window.downloadLcReport = function(lcName) {
-  const fLcName = document.getElementById('fLcName');
-  const prevVal = fLcName.value;
-  const prevTheme = document.getElementById('themeSelect').value;
-  
-  applyTheme('ivory');
-  Chart.defaults.color = '#5C5238';
-  
-  fLcName.value = lcName;
-  renderAll();
-  showOnlySection('top');
-  
-  setTimeout(() => {
-    const titleEl = document.createElement('h1');
-    titleEl.id = 'printHeaderTitle';
-    titleEl.style.textAlign = 'center';
-    titleEl.style.padding = '20px';
-    titleEl.style.display = 'none';
-    titleEl.style.color = '#171207';
-    titleEl.innerHTML = `${lcName} - Collection & Recovery Dashboard Report`;
-    document.getElementById('top').prepend(titleEl);
+    const fLcName = document.getElementById('fLcName');
+    const prevVal = fLcName.value;
     
-    const style = document.createElement('style');
-    style.id = 'printHeaderStyle';
-    style.innerHTML = '@media print { body { background: #F7F3EA !important; } #printHeaderTitle { display: block !important; margin-bottom: 20px; font-size:24px; border-bottom: 2px solid #ccc; } .kpi-value { background: none !important; -webkit-text-fill-color: initial !important; color: #171207 !important; text-shadow: none !important; } .kpi-label { color: #5C5238 !important; font-weight: 800 !important; } .chart-box h3 { color: #171207 !important; } }';
-    document.head.appendChild(style);
-
-    window.print();
-    
-    titleEl.remove();
-    style.remove();
-    
-    applyTheme(prevTheme);
-    Chart.defaults.color = '#BDBDBD';
-Chart.defaults.maintainAspectRatio = false;
-    fLcName.value = prevVal;
+    fLcName.value = lcName;
     renderAll();
-    showOnlySection('reportsSection');
-  }, 850);
-};
-function downloadText(content,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);}
+    showOnlySection('top');
+    
+    setTimeout(() => {
+      const titleEl = document.createElement('h1');
+      titleEl.id = 'printHeaderTitle';
+      titleEl.style.textAlign = 'center';
+      titleEl.style.padding = '20px';
+      titleEl.style.display = 'none';
+      titleEl.style.color = 'var(--gold)';
+      titleEl.innerHTML = lcName + ' - Collection & Recovery Dashboard Report';
+      document.getElementById('top').prepend(titleEl);
+      
+      const style = document.createElement('style');
+      style.id = 'printHeaderStyle';
+      style.innerHTML = '@media print { #printHeaderTitle { display: block !important; margin-bottom: 20px; font-size:24px; border-bottom: 2px solid var(--border); } }';
+      document.head.appendChild(style);
+  
+      window.print();
+      
+      titleEl.remove();
+      style.remove();
+      
+      fLcName.value = prevVal;
+      renderAll();
+      showOnlySection('reportsSection');
+    }, 850);
+  };
+  function downloadText(content,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);}
 function exportRecords(format){const scope=document.querySelector('input[name="exportScope"]:checked').value;if(scope==='visual'||format==='pdf'){window.print();return;}const data=scope==='all'?RAW:getFiltered();if(format==='xlsx'){const ws=XLSX.utils.json_to_sheet(data);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Collection Data');XLSX.writeFile(wb,'Collection_Recovery_Export.xlsx');}if(format==='json')downloadText(JSON.stringify(data,null,2),'Collection_Recovery_Export.json','application/json');if(format==='csv'){const keys=Object.keys(data[0]||{});downloadText([keys.join(','),...data.map(r=>keys.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(','))].join('\n'),'Collection_Recovery_Export.csv','text/csv');}}
 document.getElementById('exportOptions').addEventListener('change',e=>{document.querySelectorAll('.export-card').forEach(x=>x.classList.toggle('selected',x.contains(e.target)&&e.target.checked));});
 document.querySelectorAll('[data-export]').forEach(b=>b.addEventListener('click',()=>{const shell=document.getElementById('exportProgress'),bar=document.getElementById('exportProgressBar'),status=document.getElementById('exportStatus');shell.classList.add('show');bar.style.width='12%';status.textContent='Preparing secure download…';setTimeout(()=>{bar.style.width='100%';exportRecords(b.dataset.export);status.textContent='Download ready.';setTimeout(()=>{shell.classList.remove('show');bar.style.width='0';},700)},280);}));
