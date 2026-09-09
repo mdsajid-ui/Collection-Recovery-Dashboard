@@ -808,10 +808,10 @@ function renderRiskCharts(data){
     options:{plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmtINR(c.raw)}}}, scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(255,215,0,.08)'},ticks:{callback:v=>'₹'+(v/1000)+'K'}}}}});
 
   makeChart('chartRiskCountPct', {type:'doughnut', data:{labels, datasets:[{data:counts, backgroundColor:colors, borderWidth:0}]},
-    options:{plugins:{legend:{position:'right',labels:{color:'var(--txt-dim)'}}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} (${(c.raw/totalCount*100).toFixed(1)}%)`}}}, cutout:'62%'}});
+    options:{plugins:{legend:{position:'right',labels:{color:Chart.defaults.color}}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} (${(c.raw/totalCount*100).toFixed(1)}%)`}}}, cutout:'62%'}});
 
   makeChart('chartRiskBalancePct', {type:'doughnut', data:{labels, datasets:[{data:balances, backgroundColor:colors, borderWidth:0}]},
-    options:{plugins:{legend:{position:'right',labels:{color:'var(--txt-dim)'}}, tooltip:{callbacks:{label:c=>`${c.label}: ${fmtINR(c.raw)} (${(c.raw/totalBal*100).toFixed(1)}%)`}}}, cutout:'62%'}});
+    options:{plugins:{legend:{position:'right',labels:{color:Chart.defaults.color}}, tooltip:{callbacks:{label:c=>`${c.label}: ${fmtINR(c.raw)} (${(c.raw/totalBal*100).toFixed(1)}%)`}}}, cutout:'62%'}});
 }
 
 /* ---- Course wise charts ---- */
@@ -825,7 +825,7 @@ function renderCourseCharts(data){
     return committed? paid/committed : 0;
   });
   makeChart('chartCoursePaidPct', {type:'doughnut', data:{labels:courses, datasets:[{data:paidPctByCourse.map(v=>Math.round(v*1000)/10), backgroundColor:palette}]},
-    options:{plugins:{legend:{position:'right',labels:{color:'var(--txt-dim)'}}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}%`}}}, cutout:'55%'}});
+    options:{plugins:{legend:{position:'right',labels:{color:Chart.defaults.color}}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}%`}}}, cutout:'55%'}});
 
   const counts = courses.map(c=>byCourse[c].length);
   const totalStudents = counts.reduce((a,b)=>a+b,0)||1;
