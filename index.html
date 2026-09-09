@@ -657,6 +657,15 @@ function populateFilters(){
     sel.innerHTML = '<option value="All">All</option>' + vals.map(v=>`<option value="${v}">${v}</option>`).join('');
     if(vals.includes(current)) sel.value = current;
   });
+  
+  const lcReportSel = document.getElementById('lcReportSelector');
+  if(lcReportSel) {
+    const currentLc = lcReportSel.value;
+    const lcs = unique(RAW, 'consultant').filter(Boolean).sort();
+    lcReportSel.innerHTML = '<option value="">Select an LC...</option>' + lcs.map(lc => `<option value="${lc}">${lc}</option>`).join('');
+    if(lcs.includes(currentLc)) lcReportSel.value = currentLc;
+  }
+
   // Quarter is derived from year-month
   const qtrs = unique(RAW.map(r=>({...r, qtr: yearMonthToQtr(r.batch)})),'qtr');
   const fq = document.getElementById('fQtr');
