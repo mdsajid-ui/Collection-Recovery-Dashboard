@@ -303,7 +303,14 @@ body.theme-pink{--bg-0:#240714;--bg-1:#3A0E24;--card:#40102A;--card-2:#551535;--
 body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}body.theme-pink .brand-badge{color:#240714;}body.theme-pink thead th{background:#551535;}
 
 @media print{
-  .sidebar, .actions-row, .filters, .asof{display:none !important;}
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  @page { size: landscape; margin: 10mm; }
+  .sidebar, .actions-row, .filters, .asof, .topbar {display:none !important;}
+  .app{grid-template-columns:1fr; padding: 0 !important; margin: 0 !important;}
+  .main {padding: 10px !important;}
+  .section{break-inside:avoid; margin-bottom: 20px;}
+  .chart-box, .kpi, table { break-inside: avoid; }
+}
   .app{grid-template-columns:1fr;}
   .section{break-inside:avoid;}
   body{background:#fff;color:#000;}
@@ -1606,8 +1613,52 @@ function renderEnterpriseModules(data){
   document.getElementById('recoveryKpis').innerHTML=[['High Risk Students',critical.length],['Critical Accounts',data.filter(r=>r.riskSegment==='Very Critical').length],['Recovery Priority',priority.length?'Immediate':'Clear'],['Open Balance',fmtINR(sum(priority,'balance'))]].map(x=>`<div class="mini-kpi"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('');
   document.getElementById('recoveryBody').innerHTML=priority.map((r,i)=>{const prog=Math.min(100,Math.round((Number(r.paidAmount)||0)/Math.max(1,Number(r.committedFee)||1)*100));const exec=esc(r.consultant||'Recovery Desk');return `<tr data-id="${esc(r.id)}"><td><b>${esc(r.name)}</b><br><small>${esc(r.id)}</small></td><td><span class="risk-pill risk-${slug(r.riskSegment)}">${esc(r.riskSegment)}</span><br><small>Priority ${i+1}</small></td><td>${fmtINR(r.balance)}</td><td><span class="status-dot ${r.finalStatus==='Fully Paid'?'complete':'alert'}"></span>${r.finalStatus==='Fully Paid'?'Resolved':'Follow-up due'}</td><td>${i%2?'Yesterday':'Not contacted'}</td><td>${i%2?'Today':'Tomorrow'}</td><td>${exec}</td><td><div class="meter"><i style="width:${prog}%"></i></div><small>${prog}% paid</small></td><td><div class="action-set"><button class="micro-btn" data-action="Call">Call</button><button class="micro-btn" data-action="WhatsApp">WhatsApp</button><button class="micro-btn" data-action="Email">Email</button><button class="micro-btn" data-action="Mark Follow-up">Follow-up</button><button class="micro-btn" data-action="Mark Paid">Mark paid</button></div></td></tr>`;}).join('')||'<tr><td colspan="9" class="empty-msg">No accounts require recovery action under the active filters.</td></tr>';
 }
-const reportNames=['Daily Report','Weekly Report','Monthly Report','Quarterly Report','Branch Report','Course Report','Consultant Report','Recovery Report','Payment Report','Student Report'];
-document.getElementById('reportGrid').innerHTML=reportNames.map((name,i)=>`<article class="report-card"><div><div class="report-icon">${['◫','◷','◉','◇'][i%4]}</div><h3>${name}</h3></div><div class="report-actions"><button class="micro-btn" data-report="view">View</button><button class="micro-btn" data-report="xlsx">Excel</button><button class="micro-btn" data-report="pdf">PDF</button><button class="micro-btn" data-report="print">Print</button></div></article>`).join('');
+const lcs = unique(RAW, 'consultant').filter(Boolean).sort();
+document.getElementById('reportGrid').innerHTML = lcs.map(lc => `
+  <article class="report-card">
+    <div>
+      <div class="report-icon">👨‍💼</div>
+      <h3>${lc} Performance Report</h3>
+      <p style="font-size:11px;color:var(--txt-dim);margin-top:4px;">Full dashboard export</p>
+    </div>
+    <div class="report-actions">
+      <button class="micro-btn" style="width:100%;text-align:center;justify-content:center;background:var(--primary);color:#000;" onclick="downloadLcReport('${lc}')">📥 Download HD Report</button>
+    </div>
+  </article>
+`).join('');
+
+window.downloadLcReport = function(lcName) {
+  const fLcName = document.getElementById('fLcName');
+  const prevVal = fLcName.value;
+  
+  fLcName.value = lcName;
+  renderAll();
+  showOnlySection('top');
+  
+  setTimeout(() => {
+    const titleEl = document.createElement('h1');
+    titleEl.id = 'printHeaderTitle';
+    titleEl.style.textAlign = 'center';
+    titleEl.style.padding = '20px';
+    titleEl.style.display = 'none';
+    titleEl.innerHTML = `${lcName} - Collection & Recovery Dashboard Report`;
+    document.getElementById('top').prepend(titleEl);
+    
+    const style = document.createElement('style');
+    style.id = 'printHeaderStyle';
+    style.innerHTML = '@media print { #printHeaderTitle { display: block !important; margin-bottom: 20px; font-size:24px; border-bottom: 2px solid #ccc; color: #fff; } }';
+    document.head.appendChild(style);
+
+    window.print();
+    
+    titleEl.remove();
+    style.remove();
+    
+    fLcName.value = prevVal;
+    renderAll();
+    showOnlySection('reportsSection');
+  }, 800);
+};
 function downloadText(content,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);}
 function exportRecords(format){const scope=document.querySelector('input[name="exportScope"]:checked').value;if(scope==='visual'||format==='pdf'){window.print();return;}const data=scope==='all'?RAW:getFiltered();if(format==='xlsx'){const ws=XLSX.utils.json_to_sheet(data);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Collection Data');XLSX.writeFile(wb,'Collection_Recovery_Export.xlsx');}if(format==='json')downloadText(JSON.stringify(data,null,2),'Collection_Recovery_Export.json','application/json');if(format==='csv'){const keys=Object.keys(data[0]||{});downloadText([keys.join(','),...data.map(r=>keys.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(','))].join('\n'),'Collection_Recovery_Export.csv','text/csv');}}
 document.getElementById('exportOptions').addEventListener('change',e=>{document.querySelectorAll('.export-card').forEach(x=>x.classList.toggle('selected',x.contains(e.target)&&e.target.checked));});
