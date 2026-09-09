@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -309,14 +309,20 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
   .sidebar, .actions-row, .filters, .asof, .topbar { display: none !important; }
   .app { grid-template-columns: 1fr; padding: 0 !important; margin: 0 !important; display: block !important; }
   .main { padding: 10px !important; margin: 0 !important; display: block !important; }
-  .section { break-inside: auto !important; margin-bottom: 20px; }
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr) !important; gap: 10px; }
-  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
-  .chart-box, .kpi { break-inside: avoid !important; }
+  .section { break-inside: auto !important; page-break-inside: auto !important; margin-bottom: 20px; }
+  
+  /* Use Flexbox for printing instead of Grid to fix page-break gaps */
+  .kpi-grid { display: flex !important; flex-wrap: wrap !important; gap: 10px; }
+  .kpi { width: calc(25% - 10px) !important; margin-bottom: 10px !important; break-inside: avoid !important; page-break-inside: avoid !important; }
+  
+  .grid-2 { display: flex !important; flex-wrap: wrap !important; gap: 10px; }
+  .chart-box { width: calc(50% - 10px) !important; margin-bottom: 10px !important; break-inside: avoid !important; page-break-inside: avoid !important; }
+  
   .table-scroll { max-height: none !important; overflow: visible !important; }
   table { width: 100% !important; border-collapse: collapse; page-break-inside: auto; }
   tr { break-inside: avoid !important; page-break-inside: avoid !important; }
   thead { display: table-header-group; }
+  h2, h3, .section-title { break-after: avoid !important; page-break-after: avoid !important; }
 }
 </style>
 
