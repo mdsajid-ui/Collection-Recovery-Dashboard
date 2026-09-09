@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -414,7 +414,10 @@ body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}bod
         <div class="chart-box"><h3>Accounts Trend by Risk Segment</h3><div class="chart-wrap"><canvas id="chartTrendAccounts"></canvas></div></div>
         <div class="chart-box"><h3>Balance Trend by Risk Segment (₹)</h3><div class="chart-wrap"><canvas id="chartTrendBalance"></canvas></div></div>
       </div>
+      <div class="grid-2">
       <div class="chart-box"><h3>Month Wise Paid Amount vs Balance Amount (₹)</h3><div class="chart-wrap"><canvas id="chartMonthPaidBalance"></canvas></div></div>
+        <div class="chart-box"><h3>Monthly Admissions</h3><div class="chart-wrap"><canvas id="chartMonthlyAdmissions"></canvas></div></div>
+      </div>
     </div>
 
     <!-- TABLE SECTION -->
@@ -952,6 +955,33 @@ function renderTrendCharts(data){
     {label:'Paid Amount', data:paidByMonth, backgroundColor:'#33C481', borderRadius:6},
     {label:'Balance Amount', data:balByMonth, backgroundColor:'#E6394F', borderRadius:6}
   ]}, options:{plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmtINR(c.raw)}`}}}, scales:{y:{grid:{color:'rgba(255,215,0,.08)'}, ticks:{callback:v=>'₹'+(v/1000)+'K'}}, x:{grid:{display:false}}}}});
+  const admByMonth = months.map(m=>byMonth[m].length);
+  makeChart('chartMonthlyAdmissions', {
+    type: 'bar',
+    data: {labels: months, datasets: [{label: 'Admissions', data: admByMonth, backgroundColor: '#A855F7', borderRadius: 6}]},
+    options: {
+      scales: {y:{beginAtZero:true, grid:{color:'rgba(255,215,0,.08)'}}, x:{grid:{display:false}}}
+    },
+    plugins: [{
+      id: 'customDataLabels',
+      afterDatasetsDraw: (chart) => {
+        const ctx = chart.ctx;
+        chart.data.datasets.forEach((dataset, i) => {
+          const meta = chart.getDatasetMeta(i);
+          if (meta.hidden) return;
+          meta.data.forEach((bar, index) => {
+            const val = dataset.data[index];
+            if(val === 0) return;
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 10px Inter';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(val.toString(), bar.x, bar.y - 4);
+          });
+        });
+      }
+    }]
+  });
 }
 
 /* ---- Student table ---- */
