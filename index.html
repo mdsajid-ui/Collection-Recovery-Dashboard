@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -302,14 +302,21 @@ body.theme-royal-blue .sidebar{background:linear-gradient(180deg,#111650,#070921
 body.theme-pink{--bg-0:#240714;--bg-1:#3A0E24;--card:#40102A;--card-2:#551535;--border:rgba(255,129,184,.32);--border-soft:rgba(255,129,184,.16);--glow:rgba(255,129,184,.27);--gold:#FF9FCB;--gold-2:#F262A1;--rose-gold:#FFD0E4;--champagne:#FFE1EF;--txt:#FFF7FB;--txt-dim:#F0C2D6;--txt-faint:#B9849E;}
 body.theme-pink .sidebar{background:linear-gradient(180deg,#3A0E24,#18040C);}body.theme-pink .brand-badge{color:#240714;}body.theme-pink thead th{background:#551535;}
 
-@media print{
+@media print {
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  @page { size: landscape; margin: 10mm; }
-  .sidebar, .actions-row, .filters, .asof, .topbar {display:none !important;}
-  .app{grid-template-columns:1fr; padding: 0 !important; margin: 0 !important;}
-  .main {padding: 10px !important;}
-  .section{break-inside:avoid; margin-bottom: 20px;}
-  .chart-box, .kpi, table { break-inside: avoid; }
+  @page { size: landscape; margin: 5mm; }
+  body { background: #000 !important; }
+  .sidebar, .actions-row, .filters, .asof, .topbar { display: none !important; }
+  .app { grid-template-columns: 1fr; padding: 0 !important; margin: 0 !important; display: block !important; }
+  .main { padding: 10px !important; margin: 0 !important; display: block !important; }
+  .section { break-inside: auto !important; margin-bottom: 20px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr) !important; gap: 10px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+  .chart-box, .kpi { break-inside: avoid !important; }
+  .table-scroll { max-height: none !important; overflow: visible !important; }
+  table { width: 100% !important; border-collapse: collapse; page-break-inside: auto; }
+  tr { break-inside: avoid !important; page-break-inside: avoid !important; }
+  thead { display: table-header-group; }
 }
 </style>
 
@@ -947,8 +954,8 @@ function renderLcCharts(lcData, rawStudents) {
     responsive:true, maintainAspectRatio:false,
     plugins:{legend:{labels:{color:'#8FA5C4',font:{size:10}}}, tooltip:{mode:'index',intersect:false}},
     scales:{
-      x:{ticks:{color:'#5B7290',font:{size:9},maxRotation:45},grid:{display:false}},
-      y:{ticks:{color:'#5B7290',font:{size:9},callback:v=>fmtCr(v)},grid:{color:'rgba(255,215,0,.08)'}}
+      x:{ticks:{color:Chart.defaults.color,font:{size:9},maxRotation:45},grid:{display:false}},
+      y:{ticks:{color:Chart.defaults.color,font:{size:9},callback:v=>fmtCr(v)},grid:{color:'rgba(255,215,0,.08)'}}
     }
   };
 
@@ -967,7 +974,7 @@ function renderLcCharts(lcData, rawStudents) {
           {label:'Revenue',data:top10.map(r=>r.revenue),backgroundColor:'rgba(0,200,150,.75)',borderRadius:4,yAxisID:'y'},
           {label:'Admissions',type:'line',data:top10.map(r=>r.admissions),borderColor:'#A855F7',backgroundColor:'#A855F7',tension:.35,yAxisID:'y1'}
         ]},
-      options: { ...chartOpts, scales: { ...chartOpts.scales, y1: {position:'right', ticks:{color:'#5B7290',font:{size:9}},grid:{display:false}} } }
+      options: { ...chartOpts, scales: { ...chartOpts.scales, y1: {position:'right', ticks:{color:Chart.defaults.color,font:{size:9}},grid:{display:false}} } }
     });
   }
 
@@ -980,7 +987,7 @@ function renderLcCharts(lcData, rawStudents) {
           {label:'Revenue',data:bottom10.map(r=>r.revenue),backgroundColor:'rgba(255,77,79,.75)',borderRadius:4,yAxisID:'y'},
           {label:'Admissions',type:'line',data:bottom10.map(r=>r.admissions),borderColor:'#00D9FF',backgroundColor:'#00D9FF',tension:.35,yAxisID:'y1'}
         ]},
-      options: { ...chartOpts, scales: { ...chartOpts.scales, y1: {position:'right', ticks:{color:'#5B7290',font:{size:9}},grid:{display:false}} } }
+      options: { ...chartOpts, scales: { ...chartOpts.scales, y1: {position:'right', ticks:{color:Chart.defaults.color,font:{size:9}},grid:{display:false}} } }
     });
   }
 
@@ -1637,6 +1644,10 @@ document.getElementById('reportGrid').innerHTML = lcCard + genericCards;
 window.downloadLcReport = function(lcName) {
   const fLcName = document.getElementById('fLcName');
   const prevVal = fLcName.value;
+  const prevTheme = document.getElementById('themeSelect').value;
+  
+  applyTheme('ivory');
+  Chart.defaults.color = '#5C5238';
   
   fLcName.value = lcName;
   renderAll();
@@ -1648,12 +1659,13 @@ window.downloadLcReport = function(lcName) {
     titleEl.style.textAlign = 'center';
     titleEl.style.padding = '20px';
     titleEl.style.display = 'none';
-    titleEl.innerHTML = `${lcName} - Collection & Recovery Dashboard Report`;
+    titleEl.style.color = '#171207';
+    titleEl.innerHTML = \ - Collection & Recovery Dashboard Report;
     document.getElementById('top').prepend(titleEl);
     
     const style = document.createElement('style');
     style.id = 'printHeaderStyle';
-    style.innerHTML = '@media print { #printHeaderTitle { display: block !important; margin-bottom: 20px; font-size:24px; border-bottom: 2px solid #ccc; color: #fff; } }';
+    style.innerHTML = '@media print { body { background: #F7F3EA !important; } #printHeaderTitle { display: block !important; margin-bottom: 20px; font-size:24px; border-bottom: 2px solid #ccc; } }';
     document.head.appendChild(style);
 
     window.print();
@@ -1661,10 +1673,12 @@ window.downloadLcReport = function(lcName) {
     titleEl.remove();
     style.remove();
     
+    applyTheme(prevTheme);
+    Chart.defaults.color = '#BDBDBD';
     fLcName.value = prevVal;
     renderAll();
     showOnlySection('reportsSection');
-  }, 800);
+  }, 850);
 };
 function downloadText(content,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);}
 function exportRecords(format){const scope=document.querySelector('input[name="exportScope"]:checked').value;if(scope==='visual'||format==='pdf'){window.print();return;}const data=scope==='all'?RAW:getFiltered();if(format==='xlsx'){const ws=XLSX.utils.json_to_sheet(data);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Collection Data');XLSX.writeFile(wb,'Collection_Recovery_Export.xlsx');}if(format==='json')downloadText(JSON.stringify(data,null,2),'Collection_Recovery_Export.json','application/json');if(format==='csv'){const keys=Object.keys(data[0]||{});downloadText([keys.join(','),...data.map(r=>keys.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(','))].join('\n'),'Collection_Recovery_Export.csv','text/csv');}}
