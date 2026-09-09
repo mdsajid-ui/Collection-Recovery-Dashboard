@@ -1645,7 +1645,7 @@ const lcs = unique(RAW, 'consultant').filter(Boolean).sort();
 const lcOptions = lcs.map(lc => `<option value="${lc}">${lc}</option>`).join('');
 
 let lcCard = `
-  <article class="report-card" style="border: 1px solid var(--primary);">
+  <article class="report-card" style="border: 1px solid var(--gold);">
     <div>
       <div class="report-icon">👨‍💼</div>
       <h3>LC Dashboard Report</h3>
@@ -1656,7 +1656,7 @@ let lcCard = `
       </select>
     </div>
     <div class="report-actions">
-      <button class="micro-btn" style="width:100%;text-align:center;justify-content:center;background:var(--primary);color:#000;padding:6px;font-weight:bold;" onclick="const val=document.getElementById('lcReportSelector').value; if(val) downloadLcReport(val); else alert('Please select an LC first.');">📥 Download HD Report</button>
+      <button class="micro-btn" style="width:100%;text-align:center;justify-content:center;background:var(--gold);color:var(--bg-0);padding:6px;font-weight:bold;" onclick="const val=document.getElementById('lcReportSelector').value; if(val) downloadLcReport(val); else alert('Please select an LC first.');">📥 Download HD Report</button>
     </div>
   </article>
 `;
