@@ -1195,8 +1195,8 @@ function renderLcPerformance(d) {
 }
 function renderAll(){
   const data = getFiltered();
-  renderLcPerformance(data);
-  renderKPIs(data);
+  try { renderLcPerformance(data); } catch(e) { console.error('Error in renderLcPerformance:', e); }
+  try { renderKPIs(data); } catch(e) { console.error('Error in renderKPIs:', e); }
   if(data.length){
     renderRiskCharts(data);
     renderCourseCharts(data);
@@ -1614,6 +1614,9 @@ document.getElementById('reportGrid').addEventListener('click',e=>{const op=e.ta
 
 /* ============ INIT ============ */
 applyTheme(sessionStorage.getItem('ipmsTheme')||'black-gold');
+populateFilters();
+resetFilterValuesToAll();
+try { renderAll(); } catch(e) { console.error('Init render error:', e); }
 loadLiveSheet();
 renderPaymentsLog();
 </script>
