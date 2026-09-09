@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -1680,7 +1680,7 @@ window.downloadLcReport = function(lcName) {
     
     const style = document.createElement('style');
     style.id = 'printHeaderStyle';
-    style.innerHTML = '@media print { body { background: #F7F3EA !important; } #printHeaderTitle { display: block !important; margin-bottom: 20px; font-size:24px; border-bottom: 2px solid #ccc; } }';
+    style.innerHTML = '@media print { body { background: #F7F3EA !important; } #printHeaderTitle { display: block !important; margin-bottom: 20px; font-size:24px; border-bottom: 2px solid #ccc; } .kpi-value { background: none !important; -webkit-text-fill-color: initial !important; color: #171207 !important; text-shadow: none !important; } .kpi-label { color: #5C5238 !important; font-weight: 800 !important; } .chart-box h3 { color: #171207 !important; } }';
     document.head.appendChild(style);
 
     window.print();
