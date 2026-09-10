@@ -28,21 +28,18 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Hide all Streamlit chrome */
+    /* Hide Streamlit Header, Footer, and Toolbar */
     #MainMenu, footer, header, [data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stDecoration"] {
         display: none !important;
         visibility: hidden !important;
         height: 0px !important;
     }
 
-    /* Lock root containers to 100vh - PREVENT OUTER PAGE SCROLL */
+    /* Force Full Bleed Deep Black Background */
     html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stAppViewBlockContainer"] {
         background-color: #050505 !important;
         color: #FFFFFF !important;
         font-family: 'Inter', sans-serif !important;
-        overflow: hidden !important;
-        height: 100vh !important;
-        max-height: 100vh !important;
         margin: 0 !important;
         padding: 0 !important;
     }
@@ -52,17 +49,14 @@ st.markdown("""
         margin: 0 !important;
         max-width: 100vw !important;
         width: 100vw !important;
-        height: 100vh !important;
-        max-height: 100vh !important;
-        overflow: hidden !important;
     }
 
-    /* Iframe and its wrapper match exact viewport */
+    /* Iframe matches exact viewport below the 36px topbar */
     [data-testid="stCustomComponentV1"] {
         width: 100vw !important;
         max-width: 100vw !important;
-        height: calc(100vh - 38px) !important;
-        max-height: calc(100vh - 38px) !important;
+        height: calc(100vh - 36px) !important;
+        max-height: calc(100vh - 36px) !important;
         overflow: hidden !important;
         margin: 0 !important;
         padding: 0 !important;
@@ -71,59 +65,21 @@ st.markdown("""
         border: none !important;
         width: 100vw !important;
         max-width: 100vw !important;
-        height: calc(100vh - 38px) !important;
-        max-height: calc(100vh - 38px) !important;
+        height: calc(100vh - 36px) !important;
+        max-height: calc(100vh - 36px) !important;
         display: block !important;
     }
 
     /* --- Luxury Gold Login Form Styling --- */
-    .login-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 85vh;
-    }
-    .login-card {
-        background: linear-gradient(165deg, #141414, #0A0A0A);
-        border: 1px solid rgba(255, 215, 0, 0.28);
-        box-shadow: 0 0 35px rgba(255, 215, 0, 0.15), 0 20px 50px rgba(0, 0, 0, 0.8);
-        border-radius: 16px;
-        padding: 36px 32px 28px;
-        max-width: 420px;
-        width: 100%;
-        text-align: center;
-    }
-    .login-badge {
-        display: inline-block;
-        background: linear-gradient(135deg, #FFD700, #E6B566);
-        color: #0A0A0A;
-        font-weight: 800;
-        font-size: 11px;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        padding: 5px 14px;
-        border-radius: 20px;
-        margin-bottom: 14px;
-    }
-    .login-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 26px;
-        font-weight: 700;
-        color: #FFFFFF;
-        margin: 0 0 6px 0;
-        letter-spacing: 0.5px;
-    }
-    .login-title span {
-        background: linear-gradient(135deg, #FFF3C4, #FFD700 55%, #E6B566);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    .login-sub {
-        font-size: 12px;
-        color: #BDBDBD;
-        margin-bottom: 24px;
-        letter-spacing: 0.4px;
+    form[data-testid="stForm"] {
+        background: linear-gradient(165deg, #141414, #0A0A0A) !important;
+        border: 1px solid rgba(255, 215, 0, 0.32) !important;
+        box-shadow: 0 0 35px rgba(255, 215, 0, 0.12), 0 20px 50px rgba(0, 0, 0, 0.8) !important;
+        border-radius: 16px !important;
+        padding: 28px 24px 22px !important;
+        max-width: 380px !important;
+        width: 100% !important;
+        margin: 4vh auto 0 !important;
     }
 
     /* Inputs override */
@@ -132,6 +88,7 @@ st.markdown("""
         border: 1px solid rgba(255, 215, 0, 0.25) !important;
         border-radius: 8px !important;
         color: #FFFFFF !important;
+        height: 40px !important;
     }
     div[data-baseweb="input"]:focus-within {
         border-color: #FFD700 !important;
@@ -140,13 +97,15 @@ st.markdown("""
     div[data-baseweb="input"] input {
         color: #FFFFFF !important;
         background-color: transparent !important;
+        font-size: 13px !important;
     }
     label[data-testid="stWidgetLabel"] p {
         color: #D4AF37 !important;
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         font-weight: 600 !important;
         letter-spacing: 0.5px !important;
         text-transform: uppercase !important;
+        margin-bottom: 2px !important;
     }
 
     /* Login Submit Button */
@@ -159,8 +118,15 @@ st.markdown("""
         text-transform: uppercase !important;
         border-radius: 8px !important;
         width: 100% !important;
-        height: 42px !important;
+        height: 38px !important;
+        font-size: 12px !important;
+        margin-top: 8px !important;
         box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25) !important;
+        transition: all 0.2s ease !important;
+    }
+    div[data-testid="stForm"] div.stButton > button:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4) !important;
     }
 
     /* Minimalist Elegant Logout Button in Header */
@@ -192,20 +158,20 @@ st.markdown("""
 # LOGIN GATE
 # ---------------------------------------------------------------------------
 if not st.session_state.authenticated:
-    _, center_col, _ = st.columns([1, 2, 1])
+    _, center_col, _ = st.columns([1, 1.8, 1])
     with center_col:
-        st.markdown("""
-        <div class="login-container">
-            <div class="login-card">
-                <span class="login-badge">Protected Portal</span>
-                <h1 class="login-title">i-PMS <span>Recovery</span></h1>
-                <p class="login-sub">Collection & Recovery Management System</p>
-        """, unsafe_allow_html=True)
+        with st.form("portal_login_form", clear_on_submit=False):
+            st.markdown("""
+            <div style="text-align: center; margin-bottom: 16px;">
+                <span style="display:inline-block; background:linear-gradient(135deg,#FFD700,#E6B566); color:#0A0A0A; font-weight:800; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; padding:3px 12px; border-radius:20px; margin-bottom:10px;">Protected Portal</span>
+                <h1 style="font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:#FFFFFF; margin:0 0 4px 0; letter-spacing:0.5px;">i-PMS <span style="background:linear-gradient(135deg,#FFF3C4,#FFD700 55%,#E6B566); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Recovery</span></h1>
+                <p style="font-size:11.5px; color:#BDBDBD; margin:0; letter-spacing:0.3px;">Collection & Recovery Management System</p>
+            </div>
+            """, unsafe_allow_html=True)
 
-        with st.form("portal_login_form"):
             entered_user = st.text_input("Username", placeholder="Enter username")
             entered_pass = st.text_input("Password", type="password", placeholder="Enter password")
-            submitted = st.form_submit_button("Sign In Securely")
+            submitted = st.form_submit_button("Sign In Securely", use_container_width=True)
 
             if submitted:
                 if entered_user == valid_username and entered_pass == valid_password:
@@ -214,11 +180,6 @@ if not st.session_state.authenticated:
                     st.rerun()
                 else:
                     st.error("Invalid credentials. Please verify your username and password.")
-
-        st.markdown("""
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
 # AUTHENTICATED: VIEWPORT-LOCKED FULL-BLEED DASHBOARD
@@ -242,7 +203,7 @@ else:
             st.session_state.authenticated = False
             st.rerun()
 
-    # Load and render dashboard (exact viewport height)
+    # Load and render dashboard
     html_path = os.path.join(os.path.dirname(__file__), "index.html")
     try:
         with open(html_path, "r", encoding="utf-8") as f:
