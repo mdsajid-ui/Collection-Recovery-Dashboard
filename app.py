@@ -28,40 +28,51 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Hide Streamlit Header, Footer, and Toolbar */
-    #MainMenu, footer, header, [data-testid="stHeader"], [data-testid="stToolbar"] {
+    /* Hide all Streamlit chrome */
+    #MainMenu, footer, header, [data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stDecoration"] {
         display: none !important;
         visibility: hidden !important;
         height: 0px !important;
     }
 
-    /* Force Full Bleed Deep Black Background */
+    /* Lock root containers to 100vh - PREVENT OUTER PAGE SCROLL */
     html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stAppViewBlockContainer"] {
         background-color: #050505 !important;
         color: #FFFFFF !important;
         font-family: 'Inter', sans-serif !important;
-        overflow-x: hidden !important;
+        overflow: hidden !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
-    /* Remove Streamlit default container padding */
     .main .block-container, [data-testid="stMainBlockContainer"] {
         padding: 0 !important;
         margin: 0 !important;
         max-width: 100vw !important;
         width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
     }
 
-    /* Full-width seamless iframe */
+    /* Iframe and its wrapper match exact viewport */
     [data-testid="stCustomComponentV1"] {
         width: 100vw !important;
         max-width: 100vw !important;
+        height: calc(100vh - 38px) !important;
+        max-height: calc(100vh - 38px) !important;
         overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     iframe {
         border: none !important;
         width: 100vw !important;
         max-width: 100vw !important;
-        height: calc(100vh - 42px) !important;
+        height: calc(100vh - 38px) !important;
+        max-height: calc(100vh - 38px) !important;
         display: block !important;
     }
 
@@ -71,7 +82,7 @@ st.markdown("""
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding-top: 10vh;
+        height: 85vh;
     }
     .login-card {
         background: linear-gradient(165deg, #141414, #0A0A0A);
@@ -115,7 +126,7 @@ st.markdown("""
         letter-spacing: 0.4px;
     }
 
-    /* Streamlit input dark override */
+    /* Inputs override */
     div[data-baseweb="input"] {
         background-color: #0E0E0E !important;
         border: 1px solid rgba(255, 215, 0, 0.25) !important;
@@ -138,37 +149,39 @@ st.markdown("""
         text-transform: uppercase !important;
     }
 
-    /* Primary Gold Buttons */
-    div.stButton > button {
+    /* Login Submit Button */
+    div[data-testid="stForm"] div.stButton > button {
         background: linear-gradient(135deg, #FFD700, #E6B566) !important;
         color: #050505 !important;
         border: none !important;
         font-weight: 700 !important;
-        letter-spacing: 0.6px !important;
+        letter-spacing: 0.8px !important;
         text-transform: uppercase !important;
-        border-radius: 6px !important;
-        transition: all 0.2s ease !important;
-    }
-    div.stButton > button:hover {
-        transform: translateY(-1px) !important;
-        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
+        border-radius: 8px !important;
+        width: 100% !important;
+        height: 42px !important;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25) !important;
     }
 
-    /* Sleek slim logout button override */
-    div[data-testid="stButton"].logout-btn button {
+    /* Minimalist Elegant Logout Button in Header */
+    div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button {
         background: transparent !important;
         color: #E6B566 !important;
-        border: 1px solid rgba(255, 215, 0, 0.35) !important;
+        border: 1px solid rgba(255, 215, 0, 0.3) !important;
         font-size: 11px !important;
         font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
         padding: 2px 14px !important;
-        height: 28px !important;
-        min-height: 28px !important;
-        line-height: 24px !important;
+        height: 26px !important;
+        min-height: 26px !important;
+        line-height: 22px !important;
+        border-radius: 5px !important;
         margin-top: 5px !important;
+        width: auto !important;
+        transition: all 0.2s ease !important;
     }
-    div[data-testid="stButton"].logout-btn button:hover {
-        background: rgba(255, 215, 0, 0.12) !important;
+    div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button:hover {
+        background: rgba(255, 215, 0, 0.15) !important;
         border-color: #FFD700 !important;
         color: #FFD700 !important;
     }
@@ -208,10 +221,10 @@ if not st.session_state.authenticated:
         """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
-# AUTHENTICATED: FULL-BLEED DASHBOARD
+# AUTHENTICATED: VIEWPORT-LOCKED FULL-BLEED DASHBOARD
 # ---------------------------------------------------------------------------
 else:
-    # Sleek 36px top navigation bar
+    # Slim 36px top navigation bar
     top_col, logout_col = st.columns([11, 1])
     with top_col:
         st.markdown(f"""
@@ -225,19 +238,17 @@ else:
         """, unsafe_allow_html=True)
 
     with logout_col:
-        st.markdown('<div class="logout-btn">', unsafe_allow_html=True)
-        if st.button("Logout", key="btn_logout", use_container_width=True):
+        if st.button("Logout", key="btn_logout"):
             st.session_state.authenticated = False
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
 
-    # Render dashboard without borders
+    # Load and render dashboard (exact viewport height)
     html_path = os.path.join(os.path.dirname(__file__), "index.html")
     try:
         with open(html_path, "r", encoding="utf-8") as f:
             html_content = f.read()
 
-        components.html(html_content, height=1450, scrolling=True)
+        components.html(html_content, scrolling=False)
 
     except FileNotFoundError:
         st.error(f"Error: Could not locate dashboard template file at {html_path}")

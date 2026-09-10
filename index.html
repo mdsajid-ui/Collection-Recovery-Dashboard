@@ -329,75 +329,111 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
   thead { display: table-header-group; }
 }
 
-/* ---- RESPONSIVE & LAYOUT ENHANCEMENTS ---- */
+
+/* ==========================================================================
+   PERFECT VIEWPORT-LOCKED LAYOUT ARCHITECTURE
+   ========================================================================== */
 html, body {
-  overflow-x: hidden !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
   max-width: 100vw !important;
-  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .app {
   display: grid !important;
   grid-template-columns: 220px 1fr !important;
-  min-height: 100vh !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+  width: 100vw !important;
   max-width: 100vw !important;
-  overflow-x: hidden !important;
   zoom: 1 !important;
 }
 
+/* Sidebar stays permanently pinned on the left with logo always visible */
 .sidebar {
-  background: linear-gradient(180deg,#0B0B0B,#050505) !important;
+  background: linear-gradient(180deg, #0B0B0B, #050505) !important;
   border-right: 1px solid var(--border-soft) !important;
-  padding: 14px 10px !important;
-  position: sticky !important;
-  top: 0 !important;
+  padding: 12px 10px !important;
   height: 100vh !important;
+  max-height: 100vh !important;
   overflow-y: auto !important;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
+  box-sizing: border-box !important;
 }
 .sidebar::-webkit-scrollbar {
   display: none !important;
 }
 
+.brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+  padding: 0 4px !important;
+}
+
 .nav-item {
   display: flex !important;
   align-items: center !important;
-  gap: 9px !important;
-  padding: 8px 10px !important;
-  border-radius: 8px !important;
+  gap: 8px !important;
+  padding: 7px 10px !important;
+  border-radius: 7px !important;
   margin-bottom: 2px !important;
   color: var(--txt-dim) !important;
-  font-size: 12px !important;
+  font-size: 11.5px !important;
   font-weight: 500 !important;
+  cursor: pointer !important;
+  border: 1px solid transparent !important;
+  transition: all .15s ease !important;
 }
 .nav-item svg {
-  width: 15px !important;
-  height: 15px !important;
+  width: 14px !important;
+  height: 14px !important;
+  flex: none !important;
+}
+.nav-item:hover {
+  background: rgba(255, 215, 0, .06) !important;
+  color: var(--txt) !important;
+}
+.nav-item.active {
+  background: rgba(255, 215, 0, .12) !important;
+  color: var(--gold) !important;
+  border-color: rgba(255, 215, 0, .25) !important;
 }
 
+/* Main content scrolls smoothly internally without moving sidebar or top of dashboard */
 .main {
-  padding: 14px 18px 40px !important;
-  min-width: 0 !important;
-  max-width: calc(100vw - 220px) !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow-y: auto !important;
   overflow-x: hidden !important;
+  padding: 14px 18px 60px !important;
   box-sizing: border-box !important;
+  min-width: 0 !important;
 }
 
+/* Topbar fits comfortably */
 .topbar {
   padding: 12px 16px !important;
   margin-bottom: 14px !important;
   gap: 10px !important;
+  box-sizing: border-box !important;
 }
 .topbar h1 {
-  font-size: 20px !important;
+  font-size: 19px !important;
   margin: 0 !important;
 }
 .topbar p {
-  font-size: 11px !important;
+  font-size: 10.5px !important;
   margin: 2px 0 0 !important;
 }
-
 .filters {
   gap: 6px !important;
 }
@@ -408,49 +444,64 @@ html, body {
 select, input[type=date], input[type=text] {
   padding: 5px 8px !important;
   font-size: 11px !important;
-  min-width: 82px !important;
+  min-width: 80px !important;
   border-radius: 6px !important;
 }
 
-/* Perfect responsive KPI grid that never overflows */
+/* Responsive KPI Grid: 4 columns on laptops, no horizontal cutoffs */
 .kpi-grid {
   display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
-  gap: 11px !important;
+  gap: 10px !important;
 }
-@media (min-width: 1600px) {
+@media (min-width: 1550px) {
   .kpi-grid { grid-template-columns: repeat(6, 1fr) !important; }
 }
-@media (max-width: 1599px) and (min-width: 1180px) {
+@media (max-width: 1549px) and (min-width: 1150px) {
   .kpi-grid { grid-template-columns: repeat(4, 1fr) !important; }
 }
-@media (max-width: 1179px) and (min-width: 800px) {
+@media (max-width: 1149px) and (min-width: 780px) {
   .kpi-grid { grid-template-columns: repeat(3, 1fr) !important; }
 }
-@media (max-width: 799px) {
+@media (max-width: 779px) {
   .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
 
 .kpi {
-  padding: 12px 14px 11px !important;
+  padding: 12px 14px !important;
   gap: 6px !important;
   min-width: 0 !important;
 }
-.kpi-label {
-  font-size: 9.5px !important;
-}
 .kpi-value {
-  font-size: clamp(16px, 1.35vw, 21px) !important;
+  font-size: clamp(16px, 1.3vw, 20px) !important;
   word-break: break-word !important;
 }
 
-.actions-row {
-  gap: 8px !important;
-  margin-bottom: 14px !important;
+/* Smooth horizontal scroll for table with gold scrollbars */
+.table-scroll {
+  max-height: 480px !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--border-soft) !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--gold) #141414 !important;
 }
-.btn {
-  padding: 7px 12px !important;
-  font-size: 11.5px !important;
+.table-scroll::-webkit-scrollbar {
+  height: 7px !important;
+  width: 7px !important;
+}
+.table-scroll::-webkit-scrollbar-thumb {
+  background: var(--gold) !important;
+  border-radius: 4px !important;
+}
+.table-scroll::-webkit-scrollbar-track {
+  background: #141414 !important;
+}
+table {
+  min-width: 1150px !important;
+  width: 100% !important;
+  border-collapse: collapse !important;
 }
 
 </style>
