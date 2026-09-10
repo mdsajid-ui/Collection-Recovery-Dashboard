@@ -22,7 +22,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 # ---------------------------------------------------------------------------
-# Global Styling (Zero-margin, Full-bleed, Dark Theme)
+# Global Styling
 # ---------------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -40,6 +40,7 @@ st.markdown("""
         background-color: #050505 !important;
         color: #FFFFFF !important;
         font-family: 'Inter', sans-serif !important;
+        overflow-x: hidden !important;
     }
 
     /* Remove Streamlit default container padding */
@@ -50,11 +51,17 @@ st.markdown("""
         width: 100vw !important;
     }
 
-    /* Remove iframe borders and margins */
+    /* Full-width seamless iframe */
+    [data-testid="stCustomComponentV1"] {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        overflow: hidden !important;
+    }
     iframe {
         border: none !important;
         width: 100vw !important;
-        height: 100vh !important;
+        max-width: 100vw !important;
+        height: calc(100vh - 42px) !important;
         display: block !important;
     }
 
@@ -64,7 +71,7 @@ st.markdown("""
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding-top: 8vh;
+        padding-top: 10vh;
     }
     .login-card {
         background: linear-gradient(165deg, #141414, #0A0A0A);
@@ -72,7 +79,7 @@ st.markdown("""
         box-shadow: 0 0 35px rgba(255, 215, 0, 0.15), 0 20px 50px rgba(0, 0, 0, 0.8);
         border-radius: 16px;
         padding: 36px 32px 28px;
-        max-width: 440px;
+        max-width: 420px;
         width: 100%;
         text-align: center;
     }
@@ -95,6 +102,11 @@ st.markdown("""
         color: #FFFFFF;
         margin: 0 0 6px 0;
         letter-spacing: 0.5px;
+    }
+    .login-title span {
+        background: linear-gradient(135deg, #FFF3C4, #FFD700 55%, #E6B566);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     .login-sub {
         font-size: 12px;
@@ -126,51 +138,39 @@ st.markdown("""
         text-transform: uppercase !important;
     }
 
-    /* Submit Button styling */
-    div.stButton > button:first-child {
+    /* Primary Gold Buttons */
+    div.stButton > button {
         background: linear-gradient(135deg, #FFD700, #E6B566) !important;
         color: #050505 !important;
         border: none !important;
         font-weight: 700 !important;
-        letter-spacing: 0.8px !important;
+        letter-spacing: 0.6px !important;
         text-transform: uppercase !important;
-        padding: 10px 24px !important;
-        border-radius: 8px !important;
-        width: 100% !important;
+        border-radius: 6px !important;
         transition: all 0.2s ease !important;
-        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25) !important;
     }
-    div.stButton > button:first-child:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.45) !important;
+    div.stButton > button:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
     }
 
-    /* Top Navigation bar when authenticated */
-    .auth-topbar {
-        background: #0A0A0A;
-        border-bottom: 1px solid rgba(255, 215, 0, 0.2);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8px 24px;
+    /* Sleek slim logout button override */
+    div[data-testid="stButton"].logout-btn button {
+        background: transparent !important;
+        color: #E6B566 !important;
+        border: 1px solid rgba(255, 215, 0, 0.35) !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        padding: 2px 14px !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        line-height: 24px !important;
+        margin-top: 5px !important;
     }
-    .auth-topbar-brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #E6B566;
-    }
-    .auth-badge {
-        background: rgba(51, 196, 129, 0.15);
-        color: #33C481;
-        border: 1px solid rgba(51, 196, 129, 0.3);
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
+    div[data-testid="stButton"].logout-btn button:hover {
+        background: rgba(255, 215, 0, 0.12) !important;
+        border-color: #FFD700 !important;
+        color: #FFD700 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -200,7 +200,7 @@ if not st.session_state.authenticated:
                     st.session_state.logged_in_user = entered_user
                     st.rerun()
                 else:
-                    st.error("Invalid username or password.")
+                    st.error("Invalid credentials. Please verify your username and password.")
 
         st.markdown("""
             </div>
@@ -211,33 +211,33 @@ if not st.session_state.authenticated:
 # AUTHENTICATED: FULL-BLEED DASHBOARD
 # ---------------------------------------------------------------------------
 else:
-    # Sleek header bar with logout option
-    col_info, col_btn = st.columns([9, 1])
-    with col_info:
+    # Sleek 36px top navigation bar
+    top_col, logout_col = st.columns([11, 1])
+    with top_col:
         st.markdown(f"""
-        <div class="auth-topbar">
-            <div class="auth-topbar-brand">
-                <span>🛡️ <b>i-PMS</b> &bull; Collection &amp; Recovery Executive Dashboard</span>
-                <span class="auth-badge">AUTHENTICATED</span>
-            </div>
-            <div style="font-size: 12px; color: #888;">
-                Logged in as: <b style="color: #FFD700;">{st.session_state.get('logged_in_user', valid_username)}</b>
-            </div>
+        <div style="display:flex;align-items:center;gap:12px;height:36px;padding:0 18px;background:#080808;border-bottom:1px solid rgba(255,215,0,0.18);font-size:11.5px;color:#A0A0A0;">
+            <span style="color:#FFD700;font-weight:700;letter-spacing:0.5px;">🛡️ i-PMS</span>
+            <span style="color:rgba(255,215,0,0.25);">|</span>
+            <span>Collection & Recovery Executive Dashboard</span>
+            <span style="background:rgba(51,196,129,0.12);color:#33C481;border:1px solid rgba(51,196,129,0.25);padding:1px 8px;border-radius:10px;font-size:9.5px;font-weight:700;">AUTHENTICATED</span>
+            <span style="margin-left:auto;color:#777;font-size:11px;">User: <b style="color:#FFD700;">{st.session_state.get('logged_in_user', valid_username)}</b></span>
         </div>
         """, unsafe_allow_html=True)
 
-    with col_btn:
-        if st.button("Logout", use_container_width=True):
+    with logout_col:
+        st.markdown('<div class="logout-btn">', unsafe_allow_html=True)
+        if st.button("Logout", key="btn_logout", use_container_width=True):
             st.session_state.authenticated = False
             st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    # Load and render the full interactive dashboard without white frames
+    # Render dashboard without borders
     html_path = os.path.join(os.path.dirname(__file__), "index.html")
     try:
         with open(html_path, "r", encoding="utf-8") as f:
             html_content = f.read()
 
-        components.html(html_content, height=1350, scrolling=True)
+        components.html(html_content, height=1450, scrolling=True)
 
     except FileNotFoundError:
         st.error(f"Error: Could not locate dashboard template file at {html_path}")
