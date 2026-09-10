@@ -510,9 +510,14 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
     margin: 0 !important;
     padding: 0 !important;
   }
-  .sidebar, .actions-row, .filters, .asof, .topbar, #searchBox, .filter-group, button {
+
+  /* Completely hide all UI controls, interactive forms, operational desks, settings, and reports center in print */
+  .sidebar, .actions-row, .filters, .asof, .topbar, #searchBox, .filter-group, button,
+  #paymentsSection, #recoverySection, #reportsSection, #exportSection, #settingsSection,
+  #lcExecSection, #lcScorecardSection, .module-intro, .auth-topbar, .logout-btn {
     display: none !important;
   }
+
   .app {
     display: block !important;
     grid-template-columns: none !important;
@@ -574,7 +579,7 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
     break-inside: avoid !important;
     page-break-inside: avoid !important;
     box-sizing: border-box !important;
-    padding: 9px 11px !important;
+    padding: 8px 10px !important;
     background: #111111 !important;
     border: 1px solid var(--border) !important;
   }
@@ -587,47 +592,47 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
     white-space: nowrap !important;
   }
 
-  /* Charts: 2 charts side-by-side, compact height to fit on pages cleanly */
+  /* Charts: compact 150px height so they fit cleanly without creating blank gap pages */
   .grid-2 {
     display: flex !important;
     flex-wrap: wrap !important;
-    gap: 10px !important;
+    gap: 8px !important;
     width: 100% !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 8px !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
   .chart-box {
-    width: calc(50% - 10px) !important;
+    width: calc(50% - 8px) !important;
     box-sizing: border-box !important;
     background: #111111 !important;
     border: 1px solid var(--border) !important;
-    border-radius: 8px !important;
-    padding: 10px !important;
+    border-radius: 6px !important;
+    padding: 8px !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
   .chart-box h3 {
-    font-size: 10.5px !important;
-    margin-bottom: 6px !important;
+    font-size: 10px !important;
+    margin-bottom: 4px !important;
     color: var(--txt-dim) !important;
   }
   .chart-wrap {
-    height: 170px !important;
-    max-height: 170px !important;
+    height: 145px !important;
+    max-height: 145px !important;
     position: relative !important;
   }
   .chart-wrap.tall {
-    height: 190px !important;
-    max-height: 190px !important;
+    height: 165px !important;
+    max-height: 165px !important;
   }
   canvas {
     max-width: 100% !important;
-    max-height: 170px !important;
+    max-height: 145px !important;
     display: block !important;
   }
 
-  /* Student Tracker Table: Multi-page flow, NO STICKY POSITIONING (fixes Chromium black page bug) */
+  /* Student Tracker Table: Multi-page flow, static positioning (no black pages) */
   .table-scroll {
     max-height: none !important;
     overflow: visible !important;
@@ -2015,9 +2020,10 @@ window.downloadLcReport = function(lcName) {
     const prevVal = fLcName.value;
     fLcName.value = lcName;
     renderAll();
-    // Keep Executive KPIs, all charts (Risk, Course, Trends), and the Student Tracker Table!
+    // Strictly show the 5 report sections: KPIs, Risk Charts, Course Charts, Trends, and the Student Table
+    const reportSections = ['kpiSection', 'riskSection', 'courseSection', 'trendSection', 'tableSection'];
     allSections.forEach(s => {
-      s.style.display = dashboardSectionIds.includes(s.id) ? '' : 'none';
+      s.style.display = reportSections.includes(s.id) ? '' : 'none';
     });
     
     setTimeout(() => {
