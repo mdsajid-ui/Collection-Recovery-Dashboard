@@ -2227,7 +2227,6 @@ According to our accounts records, there is an outstanding balance on your cours
 • Total Committed Fee: {committed_fee}
 • Amount Paid to Date: {paid_amount}
 • Pending Outstanding Balance: {balance}
-• Assigned LC Executive: {consultant}
 
 Kindly arrange the clearance of your pending fee balance at the earliest to ensure uninterrupted access to your learning portal (LMS), upcoming live sessions, assignments, and placement support.
 
@@ -2244,8 +2243,18 @@ function getRecoveryEmailSettings() {
     const raw = localStorage.getItem('ipms_recovery_email_settings');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed.bodyTemplate && (parsed.bodyTemplate.includes('{consultant}\nCollection & Recovery Desk') || parsed.bodyTemplate.includes('Collection & Recovery Desk'))) {
-        parsed.bodyTemplate = parsed.bodyTemplate.replace(/Warm regards,[\s\S]*?(?:DV Analytics[^\n]*|$)/i, 'Warm regards,\nTeam DV Analytics');
+      let changed = false;
+      if (parsed.bodyTemplate) {
+        if (parsed.bodyTemplate.includes('Assigned LC Executive:')) {
+          parsed.bodyTemplate = parsed.bodyTemplate.replace(/\n?•\s*Assigned LC Executive:[^\n]*/gi, '');
+          changed = true;
+        }
+        if (parsed.bodyTemplate.includes('{consultant}\nCollection & Recovery Desk') || parsed.bodyTemplate.includes('Collection & Recovery Desk')) {
+          parsed.bodyTemplate = parsed.bodyTemplate.replace(/Warm regards,[\s\S]*?(?:DV Analytics[^\n]*|$)/i, 'Warm regards,\nTeam DV Analytics');
+          changed = true;
+        }
+      }
+      if (changed) {
         localStorage.setItem('ipms_recovery_email_settings', JSON.stringify(parsed));
       }
       return Object.assign({}, DEFAULT_EMAIL_SETTINGS, parsed);
