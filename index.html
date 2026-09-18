@@ -987,9 +987,9 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
           <div>
             <div class="eyebrow" style="color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Outreach Automation</div>
             <h3 style="margin:4px 0 0;font-size:16px;color:var(--txt);display:flex;align-items:center;gap:8px;">
-              <span>✉️</span> Outlook Recovery Email Template
+              <span>✉️</span> Recovery Email Template & Outreach
             </h3>
-            <p style="margin:4px 0 0;font-size:11.5px;color:var(--txt-dim);">Configure your Microsoft Outlook integration, default recovery template, and auto-dispatch rules for learner follow-ups.</p>
+            <p style="margin:4px 0 0;font-size:11.5px;color:var(--txt-dim);">Personalize your recovery reminder template and default CC automatically sent to learners.</p>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <button type="button" class="btn ripple" id="btnResetEmailTemplate" style="font-size:11px;padding:7px 12px;">↺ Reset Default</button>
@@ -998,27 +998,26 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
           </div>
         </div>
 
+        <input type="hidden" id="emailOutlookMode" value="desktop">
+
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
           <div class="setting-field">
-            <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Outlook Dispatch Mode</label>
-            <select id="emailOutlookMode" style="width:100%;padding:9px 12px;border-radius:8px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12.5px;">
-              <option value="desktop">Microsoft Outlook App (Desktop / Native)</option>
-              <option value="web365">Outlook 365 Web (Office Portal)</option>
-              <option value="live">Outlook Live / Hotmail Web</option>
-            </select>
-            <span style="display:block;margin-top:4px;font-size:10px;color:var(--txt-faint);">Desktop uses native mail protocol; Web opens official Office 365 compose tab.</span>
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Sender Account</label>
+            <input type="text" id="emailSenderAccount" value="md.sajid@dvdataanalytics.com" readonly style="width:100%;padding:9px 12px;border-radius:8px;background:rgba(255,255,255,0.03);color:var(--txt-dim);border:1px solid var(--border);font-size:12.5px;cursor:not-allowed;">
+            <span style="display:block;margin-top:4px;font-size:10px;color:var(--txt-faint);">Official recovery outreach mailbox (DV Analytics).</span>
           </div>
 
+          <div class="setting-field">
             <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Default CC (Recovery Desk / Escalations)</label>
             <input type="text" id="emailDefaultCc" placeholder="e.g. md.sajid@dvdataanalytics.com" value="md.sajid@dvdataanalytics.com" style="width:100%;padding:9px 12px;border-radius:8px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12.5px;">
-            <span style="display:block;margin-top:4px;font-size:10px;color:var(--txt-faint);">Email addresses to automatically copy on recovery emails (default: md.sajid@dvdataanalytics.com).</span>
+            <span style="display:block;margin-top:4px;font-size:10px;color:var(--txt-faint);">Email address automatically copied on recovery follow-ups.</span>
           </div>
         </div>
 
         <div class="setting-row" style="margin-bottom:16px;background:rgba(255,255,255,0.02);padding:11px 14px;border-radius:8px;border:1px solid var(--border-soft);">
           <div>
-            <h3 style="margin:0;font-size:12px;color:var(--txt);">Show Email Composer Modal Before Opening Outlook</h3>
-            <p style="margin:3px 0 0;font-size:10.5px;color:var(--txt-faint);">When disabled, clicking "Email" launches Outlook directly in 1-click. When enabled, displays interactive preview first.</p>
+            <h3 style="margin:0;font-size:12px;color:var(--txt);">Show Email Composer Modal Before Sending</h3>
+            <p style="margin:3px 0 0;font-size:10.5px;color:var(--txt-faint);">When disabled, clicking "Email" sends directly. When enabled, displays quick review and Send option.</p>
           </div>
           <input class="switch" type="checkbox" id="emailShowPreviewSwitch" checked>
         </div>
@@ -1056,14 +1055,14 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
       </div>
     </div>
 
-    <!-- OUTLOOK EMAIL COMPOSER MODAL -->
+    <!-- RECOVERY EMAIL COMPOSER MODAL -->
     <div id="outlookEmailModal" class="email-modal-overlay" style="display:none;">
       <div class="email-modal-box">
         <div class="email-modal-header">
           <div style="display:flex;align-items:center;gap:10px;">
             <span style="font-size:20px;">✉️</span>
             <div>
-              <h3 style="margin:0;font-size:15px;color:var(--txt);">Send Recovery Email via Outlook</h3>
+              <h3 style="margin:0;font-size:15px;color:var(--txt);">Send Recovery Email</h3>
               <span style="font-size:10.5px;color:var(--txt-faint);" id="modalStudentSubtitle">Learner Outreach</span>
             </div>
           </div>
@@ -1080,7 +1079,7 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
             </div>
             <div>
               <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:4px;">CC (Recovery Desk / LC)</label>
-              <input type="text" id="modalEmailCc" placeholder="recovery@dvanalytics.in" style="width:100%;padding:8px 10px;border-radius:6px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12px;">
+              <input type="text" id="modalEmailCc" placeholder="md.sajid@dvdataanalytics.com" value="md.sajid@dvdataanalytics.com" style="width:100%;padding:8px 10px;border-radius:6px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12px;">
             </div>
           </div>
 
@@ -1094,21 +1093,14 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
             <textarea id="modalEmailBody" rows="10" style="width:100%;padding:10px;border-radius:6px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12px;line-height:1.5;font-family:var(--font-body);resize:vertical;"></textarea>
           </div>
 
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-            <div style="display:flex;align-items:center;gap:8px;">
-              <label style="font-size:11px;color:var(--txt-dim);">Client:</label>
-              <select id="modalOutlookMethod" style="padding:6px 9px;border-radius:6px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:11.5px;">
-                <option value="desktop">Desktop Outlook (App)</option>
-                <option value="web365">Outlook 365 (Web)</option>
-                <option value="live">Outlook Live / Hotmail</option>
-              </select>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button type="button" class="btn ripple" id="btnModalCopyText" style="font-size:11px;padding:7px 12px;">📋 Copy Text</button>
-              <button type="button" class="btn primary ripple" id="btnModalLaunchOutlook" style="font-size:11.5px;padding:7px 18px;font-weight:700;">🚀 Open in Outlook</button>
-            </div>
+          <input type="hidden" id="modalOutlookMethod" value="desktop">
+
+          <div style="display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-top:6px;">
+            <button type="button" class="btn ripple" id="btnModalCopyText" style="font-size:11.5px;padding:8px 14px;">📋 Copy Text</button>
+            <button type="button" class="btn ripple" id="btnModalCancel" style="font-size:11.5px;padding:8px 14px;">Cancel</button>
+            <button type="button" class="btn primary ripple" id="btnModalLaunchOutlook" style="font-size:12.5px;padding:8px 26px;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--rose-gold));color:#050505;">✉️ Send</button>
           </div>
-          <div id="modalDispatchStatus" style="font-size:11px;color:var(--green);margin-top:8px;min-height:14px;font-weight:600;"></div>
+          <div id="modalDispatchStatus" style="font-size:11.5px;color:var(--green);margin-top:8px;min-height:16px;font-weight:600;text-align:right;"></div>
         </div>
       </div>
     </div>
@@ -2431,7 +2423,9 @@ function setupEmailAutomationListeners() {
   const btnLaunch = document.getElementById('btnModalLaunchOutlook');
   const statusEl = document.getElementById('modalDispatchStatus');
 
+  const btnCancel = document.getElementById('btnModalCancel');
   if (btnClose) btnClose.addEventListener('click', closeEmailComposerModal);
+  if (btnCancel) btnCancel.addEventListener('click', closeEmailComposerModal);
   if (modal) {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeEmailComposerModal();
@@ -2476,19 +2470,25 @@ function setupEmailAutomationListeners() {
         activeEmailModalContext.rec.email = to;
       }
 
+      btnLaunch.textContent = 'Sending...';
+      btnLaunch.disabled = true;
+
       launchOutlook({ to, cc, subject, body, method });
 
       if (activeEmailModalContext && activeEmailModalContext.sourceBtn) {
         const btn = activeEmailModalContext.sourceBtn;
         const orig = btn.textContent;
         btn.textContent = 'Sent ✓';
-        setTimeout(() => { btn.textContent = orig; }, 1500);
+        setTimeout(() => { btn.textContent = orig; }, 2000);
       }
 
-      if (statusEl) statusEl.textContent = 'Dispatched to Outlook compose! ✓';
+      btnLaunch.textContent = 'Sent ✓';
+      if (statusEl) statusEl.textContent = 'Email sent to learner! ✓';
       setTimeout(() => {
+        btnLaunch.disabled = false;
+        btnLaunch.textContent = '✉️ Send';
         closeEmailComposerModal();
-      }, 1000);
+      }, 900);
     });
   }
 
