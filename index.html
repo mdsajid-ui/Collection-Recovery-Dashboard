@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -276,6 +276,9 @@ tbody tr:hover td{color:var(--txt);}
 @media(max-width:1200px){.report-grid{grid-template-columns:repeat(3,1fr);}}@media(max-width:900px){.app{grid-template-columns:76px 1fr;}.sidebar{padding:18px 10px;}.brand>div:not(.brand-badge),.nav-item{font-size:0;justify-content:center;padding:11px 5px;}.brand-logo{width:48px;height:38px;}.nav-item svg{width:19px;height:19px;}.nav-item.active::before{left:-10px;}.mini-kpi-grid{grid-template-columns:repeat(2,1fr);}.report-grid{grid-template-columns:repeat(2,1fr);}}@media(max-width:620px){.app{display:block;}.sidebar{position:sticky;z-index:10;height:auto;display:flex;align-items:center;gap:2px;overflow-x:auto;overflow-y:hidden;padding:8px;}.brand{margin:0 6px 0 0;}.brand-badge,.brand-logo{width:32px;height:32px;}.sidebar::after{display:none;}.nav-item{min-width:43px;margin:0;}.nav-item.active::before{left:50%;bottom:-8px;top:auto;width:22px;height:2px;transform:translateX(-50%);}.main{padding:14px 12px 45px;}.topbar{padding:15px;}.mini-kpi-grid,.settings-grid,.export-options,.report-grid{grid-template-columns:1fr;}.metric-line{grid-template-columns:70px 1fr auto;}.section{padding:15px;}}
 
 #dropZone.dragover{outline:2px dashed var(--gold);outline-offset:-8px;background:rgba(255,215,0,.06);}
+
+/* Outlook Email Automation & Template Styles */
+.tag-chip{background:rgba(255,215,0,.08);border:1px solid var(--border);color:var(--gold);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:var(--font-body);transition:all .15s ease;}.tag-chip:hover{background:var(--gold);color:#050505;transform:translateY(-1px);box-shadow:0 2px 8px rgba(255,215,0,.25);}.email-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;}.email-modal-box{background:linear-gradient(165deg,var(--card-2),var(--card));border:1px solid var(--border);box-shadow:0 12px 48px rgba(0,0,0,.85),0 0 25px rgba(255,215,0,.12);border-radius:14px;width:100%;max-width:680px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;animation:modalScaleIn .2s ease-out;}@keyframes modalScaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}.email-modal-header{padding:14px 18px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.02);}.email-modal-close{background:transparent;border:none;color:var(--txt-dim);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all .15s;line-height:1;}.email-modal-close:hover{color:var(--txt);background:rgba(255,255,255,.08);}.email-modal-summary{padding:10px 18px;background:rgba(255,215,0,.04);border-bottom:1px solid var(--border-soft);display:flex;gap:14px;flex-wrap:wrap;font-size:11px;}.email-modal-body{padding:16px 18px 20px;overflow-y:auto;}
 
 /* Light "Ivory & Gold" theme (Toggle Theme button) */
 body.light-theme{
@@ -977,6 +980,137 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
         <div class="setting-row"><div><h3>Security</h3><p>Update your account password.</p></div><button class="btn" data-message="Password changes are managed by your sign-in provider.">Change password</button></div>
         <div class="setting-row"><div><h3>Session</h3><p>End this local dashboard session.</p></div><button class="btn" data-message="Logout is available when this dashboard is connected to authentication.">Logout</button></div>
       </div>
+
+      <!-- OUTLOOK & EMAIL RECOVERY TEMPLATE SETTINGS -->
+      <div class="email-settings-card" style="margin-top:22px;background:linear-gradient(160deg,var(--card-2),var(--card));border:1px solid var(--border);border-radius:12px;padding:22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px;border-bottom:1px solid var(--border-soft);padding-bottom:14px;">
+          <div>
+            <div class="eyebrow" style="color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Outreach Automation</div>
+            <h3 style="margin:4px 0 0;font-size:16px;color:var(--txt);display:flex;align-items:center;gap:8px;">
+              <span>✉️</span> Outlook Recovery Email Template
+            </h3>
+            <p style="margin:4px 0 0;font-size:11.5px;color:var(--txt-dim);">Configure your Microsoft Outlook integration, default recovery template, and auto-dispatch rules for learner follow-ups.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="btn ripple" id="btnResetEmailTemplate" style="font-size:11px;padding:7px 12px;">↺ Reset Default</button>
+            <button type="button" class="btn ripple" id="btnPreviewEmailTemplate" style="font-size:11px;padding:7px 12px;">👁️ Test Preview</button>
+            <button type="button" class="btn primary ripple" id="btnSaveEmailSettings" style="font-size:11px;padding:7px 18px;">💾 Save Template</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+          <div class="setting-field">
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Outlook Dispatch Mode</label>
+            <select id="emailOutlookMode" style="width:100%;padding:9px 12px;border-radius:8px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12.5px;">
+              <option value="desktop">Microsoft Outlook App (Desktop / Native)</option>
+              <option value="web365">Outlook 365 Web (Office Portal)</option>
+              <option value="live">Outlook Live / Hotmail Web</option>
+            </select>
+            <span style="display:block;margin-top:4px;font-size:10px;color:var(--txt-faint);">Desktop uses native mail protocol; Web opens official Office 365 compose tab.</span>
+          </div>
+
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Default CC (Recovery Desk / Escalations)</label>
+            <input type="text" id="emailDefaultCc" placeholder="e.g. md.sajid@dvdataanalytics.com" value="md.sajid@dvdataanalytics.com" style="width:100%;padding:9px 12px;border-radius:8px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12.5px;">
+            <span style="display:block;margin-top:4px;font-size:10px;color:var(--txt-faint);">Email addresses to automatically copy on recovery emails (default: md.sajid@dvdataanalytics.com).</span>
+          </div>
+        </div>
+
+        <div class="setting-row" style="margin-bottom:16px;background:rgba(255,255,255,0.02);padding:11px 14px;border-radius:8px;border:1px solid var(--border-soft);">
+          <div>
+            <h3 style="margin:0;font-size:12px;color:var(--txt);">Show Email Composer Modal Before Opening Outlook</h3>
+            <p style="margin:3px 0 0;font-size:10.5px;color:var(--txt-faint);">When disabled, clicking "Email" launches Outlook directly in 1-click. When enabled, displays interactive preview first.</p>
+          </div>
+          <input class="switch" type="checkbox" id="emailShowPreviewSwitch" checked>
+        </div>
+
+        <div class="setting-field" style="margin-bottom:14px;">
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Subject Template</label>
+          <input type="text" id="emailSubjectTemplate" style="width:100%;padding:9px 12px;border-radius:8px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:13px;" placeholder="Important: Fee Clearance Reminder - {name} ({id}) | DV Analytics">
+        </div>
+
+        <div class="setting-field" style="margin-bottom:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <label style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;">Email Body Template</label>
+            <span style="font-size:10.5px;color:var(--txt-faint);">Plain text format compatible with Outlook compose</span>
+          </div>
+          <textarea id="emailBodyTemplate" rows="12" style="width:100%;padding:12px;border-radius:8px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12.5px;line-height:1.55;font-family:var(--font-body);resize:vertical;"></textarea>
+        </div>
+
+        <div style="margin-top:10px;">
+          <div style="font-size:10.5px;font-weight:600;color:var(--txt-dim);margin-bottom:6px;">Click to insert dynamic placeholder into template:</div>
+          <div class="template-tags-bar" id="templateTagChips" style="display:flex;flex-wrap:wrap;gap:6px;">
+            <button type="button" class="tag-chip" data-tag="{name}">+ {name}</button>
+            <button type="button" class="tag-chip" data-tag="{id}">+ {id}</button>
+            <button type="button" class="tag-chip" data-tag="{course}">+ {course}</button>
+            <button type="button" class="tag-chip" data-tag="{balance}">+ {balance}</button>
+            <button type="button" class="tag-chip" data-tag="{committed_fee}">+ {committed_fee}</button>
+            <button type="button" class="tag-chip" data-tag="{paid_amount}">+ {paid_amount}</button>
+            <button type="button" class="tag-chip" data-tag="{consultant}">+ {consultant}</button>
+            <button type="button" class="tag-chip" data-tag="{manager}">+ {manager}</button>
+            <button type="button" class="tag-chip" data-tag="{campus}">+ {campus}</button>
+            <button type="button" class="tag-chip" data-tag="{batch}">+ {batch}</button>
+            <button type="button" class="tag-chip" data-tag="{today}">+ {today}</button>
+          </div>
+        </div>
+        <div id="emailSettingsSaveStatus" style="margin-top:10px;font-size:11.5px;color:var(--green);min-height:16px;font-weight:600;"></div>
+      </div>
+    </div>
+
+    <!-- OUTLOOK EMAIL COMPOSER MODAL -->
+    <div id="outlookEmailModal" class="email-modal-overlay" style="display:none;">
+      <div class="email-modal-box">
+        <div class="email-modal-header">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:20px;">✉️</span>
+            <div>
+              <h3 style="margin:0;font-size:15px;color:var(--txt);">Send Recovery Email via Outlook</h3>
+              <span style="font-size:10.5px;color:var(--txt-faint);" id="modalStudentSubtitle">Learner Outreach</span>
+            </div>
+          </div>
+          <button class="email-modal-close" id="btnCloseEmailModal" title="Close">✕</button>
+        </div>
+
+        <div class="email-modal-summary" id="modalStudentSummary"></div>
+
+        <div class="email-modal-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:4px;">To (Learner Email) <span style="color:var(--red);">*</span></label>
+              <input type="email" id="modalEmailTo" placeholder="learner@example.com" style="width:100%;padding:8px 10px;border-radius:6px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12px;">
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:4px;">CC (Recovery Desk / LC)</label>
+              <input type="text" id="modalEmailCc" placeholder="recovery@dvanalytics.in" style="width:100%;padding:8px 10px;border-radius:6px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12px;">
+            </div>
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:4px;">Subject</label>
+            <input type="text" id="modalEmailSubject" style="width:100%;padding:8px 10px;border-radius:6px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12px;">
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:4px;">Message Body</label>
+            <textarea id="modalEmailBody" rows="10" style="width:100%;padding:10px;border-radius:6px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12px;line-height:1.5;font-family:var(--font-body);resize:vertical;"></textarea>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <label style="font-size:11px;color:var(--txt-dim);">Client:</label>
+              <select id="modalOutlookMethod" style="padding:6px 9px;border-radius:6px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:11.5px;">
+                <option value="desktop">Desktop Outlook (App)</option>
+                <option value="web365">Outlook 365 (Web)</option>
+                <option value="live">Outlook Live / Hotmail</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="button" class="btn ripple" id="btnModalCopyText" style="font-size:11px;padding:7px 12px;">📋 Copy Text</button>
+              <button type="button" class="btn primary ripple" id="btnModalLaunchOutlook" style="font-size:11.5px;padding:7px 18px;font-weight:700;">🚀 Open in Outlook</button>
+            </div>
+          </div>
+          <div id="modalDispatchStatus" style="font-size:11px;color:var(--green);margin-top:8px;min-height:14px;font-weight:600;"></div>
+        </div>
+      </div>
     </div>
 
     <div class="footer-note">Note: All amounts are in INR. Data source: DV Analytics collection records. "Duration" reflects months elapsed since batch start (not day-level DPD, which was not present in the source data).</div>
@@ -986,6 +1120,14 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
 <script>
 /* ============ EMBEDDED SAMPLE DATA (from DV Analytics export) ============ */
 const SAMPLE_DATA = [{"id": "DVA1001", "name": "Rakesh Prasad Sahoo", "campus": "BLR", "course": "APIDS", "batchYear": 202401, "batch": 202401, "batchDetails": 202601, "consultant": "Gayathri", "manager": "Ajith Gopalkrishna", "leadSource": "Website", "tuitionFee": 354000, "committedFee": 290000, "discount": 64000, "discountRate": 0.2207, "paidAmount": 286800, "balance": 0, "balancePct": 0, "duration": 30, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.989, "payRate": 0.989, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1002", "name": "shubham somkuwar", "campus": "BLR", "course": "DA", "batchYear": 202301, "batch": 202301, "batchDetails": 202601, "consultant": "Sharad", "manager": "Ajith Gopalkrishna", "leadSource": "Referral", "tuitionFee": 177000, "committedFee": 177000, "discount": 0, "discountRate": 0, "paidAmount": 177000, "balance": 0, "balancePct": 0, "duration": 42, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 1, "payRate": 1, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1003", "name": "Kaustuv ranjan sahu", "campus": "BBSR", "course": "APIDA", "batchYear": 202401, "batch": 202601, "batchDetails": 202601, "consultant": "Ankita", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 295000, "committedFee": 290000, "discount": 5000, "discountRate": 0.0172, "paidAmount": 255000, "balance": 20000, "balancePct": 0.069, "duration": 30, "riskSegment": "Low Risk", "defaultAccounts": 1, "defaultBalance": 20000, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.8793, "payRate": 0.8793, "balanceControlRatio": 0.0784, "finalStatus": "Default"}, {"id": "DVA1004", "name": "Vidhata Tiwari", "campus": "BBSR", "course": "APIDS", "batchYear": 202601, "batch": 202601, "batchDetails": 202601, "consultant": "Saroj", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 354000, "committedFee": 290000, "discount": 64000, "discountRate": 0.2207, "paidAmount": 303000, "balance": 0, "balancePct": 0, "duration": 6, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 1.0448, "payRate": 1.0448, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1005", "name": "Adarshit Soni", "campus": "BBSR", "course": "DA", "batchYear": 202601, "batch": 202601, "batchDetails": 202602, "consultant": "Saroj", "manager": "Ajith Gopalkrishna", "leadSource": "Referral", "tuitionFee": 177000, "committedFee": 177000, "discount": 0, "discountRate": 0, "paidAmount": 177000, "balance": 0, "balancePct": 0, "duration": 6, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 1, "payRate": 1, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1006", "name": "Payolina Nanda", "campus": "BBSR", "course": "APIDA", "batchYear": 202602, "batch": 202602, "batchDetails": 202602, "consultant": "Saroj", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 295000, "committedFee": 290000, "discount": 5000, "discountRate": 0.0172, "paidAmount": 274999, "balance": 0, "balancePct": 0, "duration": 5, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.9483, "payRate": 0.9483, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1007", "name": "Sonali Pradhan", "campus": "BBSR", "course": "APIDS", "batchYear": 202602, "batch": 202602, "batchDetails": 202602, "consultant": "Soumya", "manager": "Ajith Gopalkrishna", "leadSource": "Paid Ads", "tuitionFee": 354000, "committedFee": 290000, "discount": 64000, "discountRate": 0.2207, "paidAmount": 255000, "balance": 40000, "balancePct": 0.1379, "duration": 5, "riskSegment": "Mid Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 1, "pendingBalance": 40000, "recoveryRate": 0.8793, "payRate": 0.8793, "balanceControlRatio": 0.1569, "finalStatus": "Pending"}, {"id": "DVA1008", "name": "Sweta Mangaraj", "campus": "BBSR", "course": "APIDS", "batchYear": 202602, "batch": 202602, "batchDetails": 202602, "consultant": "Ankita", "manager": "Ajith Gopalkrishna", "leadSource": "Paid Ads", "tuitionFee": 354000, "committedFee": 290000, "discount": 64000, "discountRate": 0.2207, "paidAmount": 305000, "balance": 0, "balancePct": 0, "duration": 5, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 1.0517, "payRate": 1.0517, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1009", "name": "Daya Sagar Padhi", "campus": "BBSR", "course": "APIDS", "batchYear": 202607, "batch": 202607, "batchDetails": 202607, "consultant": "Soumya", "manager": "Ajith Gopalkrishna", "leadSource": "Paid Ads", "tuitionFee": 354000, "committedFee": 290000, "discount": 64000, "discountRate": 0.2207, "paidAmount": 30000, "balance": 280000, "balancePct": 0.9655, "duration": 0, "riskSegment": "Very Critical", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 1, "pendingBalance": 280000, "recoveryRate": 0.1034, "payRate": 0.1034, "balanceControlRatio": 9.3333, "finalStatus": "Pending"}, {"id": "DVA1010", "name": "Omm Prakash Parida", "campus": "BBSR", "course": "APIDS", "batchYear": 202602, "batch": 202602, "batchDetails": 202603, "consultant": "Saroj", "manager": "Ajith Gopalkrishna", "leadSource": "Walk in", "tuitionFee": 354000, "committedFee": 290000, "discount": 64000, "discountRate": 0.2207, "paidAmount": 267000, "balance": 23000, "balancePct": 0.0793, "duration": 5, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 1, "pendingBalance": 23000, "recoveryRate": 0.9207, "payRate": 0.9207, "balanceControlRatio": 0.0861, "finalStatus": "Pending"}, {"id": "DVA1011", "name": "Asutosh Rath", "campus": "BBSR", "course": "APIDA", "batchYear": 202603, "batch": 202603, "batchDetails": 202603, "consultant": "Saroj", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 295000, "committedFee": 290000, "discount": 5000, "discountRate": 0.0172, "paidAmount": 245000, "balance": 35000, "balancePct": 0.1207, "duration": 4, "riskSegment": "Mid Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 1, "pendingBalance": 35000, "recoveryRate": 0.8448, "payRate": 0.8448, "balanceControlRatio": 0.1429, "finalStatus": "Pending"}, {"id": "DVA1012", "name": "Chandan N", "campus": "BBSR", "course": "APIDA", "batchYear": 202603, "batch": 202603, "batchDetails": 202603, "consultant": "Deepali Das", "manager": "Ajith Gopalkrishna", "leadSource": "Paid Ads", "tuitionFee": 295000, "committedFee": 290000, "discount": 5000, "discountRate": 0.0172, "paidAmount": 280000, "balance": 0, "balancePct": 0, "duration": 4, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.9655, "payRate": 0.9655, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1013", "name": "Subhankit", "campus": "BLR", "course": "DA", "batchYear": 202603, "batch": 202603, "batchDetails": 202604, "consultant": "Saroj", "manager": "Ajith Gopalkrishna", "leadSource": "Walk in", "tuitionFee": 177000, "committedFee": 177000, "discount": 0, "discountRate": 0, "paidAmount": 130000, "balance": 160000, "balancePct": 0.904, "duration": 4, "riskSegment": "Critical", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 1, "pendingBalance": 160000, "recoveryRate": 0.7345, "payRate": 0.7345, "balanceControlRatio": 1.2308, "finalStatus": "Pending"}, {"id": "DVA1014", "name": "Abhijit Dalai", "campus": "BBSR", "course": "APIDA", "batchYear": 202603, "batch": 202603, "batchDetails": 202604, "consultant": "Ankita", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 295000, "committedFee": 290000, "discount": 5000, "discountRate": 0.0172, "paidAmount": 285000, "balance": 0, "balancePct": 0, "duration": 4, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.9828, "payRate": 0.9828, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1015", "name": "Ronismita sahu", "campus": "BBSR", "course": "APIDA", "batchYear": 202603, "batch": 202603, "batchDetails": 202604, "consultant": "Soumya", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 295000, "committedFee": 290000, "discount": 5000, "discountRate": 0.0172, "paidAmount": 280000, "balance": 0, "balancePct": 0, "duration": 4, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.9655, "payRate": 0.9655, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1016", "name": "Siba Prasad Samantaray", "campus": "BBSR", "course": "AIML", "batchYear": 202604, "batch": 202604, "batchDetails": 202604, "consultant": "Soumya", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 259600, "committedFee": 250000, "discount": 9600, "discountRate": 0.0384, "paidAmount": 250000, "balance": 0, "balancePct": 0, "duration": 3, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 1, "payRate": 1, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1017", "name": "Manasi Mahakud", "campus": "BBSR", "course": "APIDS", "batchYear": 202604, "batch": 202604, "batchDetails": 202605, "consultant": "Soumya", "manager": "Ajith Gopalkrishna", "leadSource": "Paid Ads", "tuitionFee": 354000, "committedFee": 290000, "discount": 64000, "discountRate": 0.2207, "paidAmount": 318600, "balance": 0, "balancePct": 0, "duration": 3, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 1.0986, "payRate": 1.0986, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1018", "name": "Soudamini Jena", "campus": "BBSR", "course": "AIML", "batchYear": 202604, "batch": 202604, "batchDetails": 202605, "consultant": "Saroj", "manager": "Ajith Gopalkrishna", "leadSource": "Paid Ads", "tuitionFee": 259600, "committedFee": 250000, "discount": 9600, "discountRate": 0.0384, "paidAmount": 250000, "balance": 0, "balancePct": 0, "duration": 3, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 1, "payRate": 1, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1019", "name": "Abhisek Das", "campus": "BBSR", "course": "APIDS", "batchYear": 202604, "batch": 202604, "batchDetails": 202605, "consultant": "Saroj", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 354000, "committedFee": 290000, "discount": 64000, "discountRate": 0.2207, "paidAmount": 280000, "balance": 0, "balancePct": 0, "duration": 3, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.9655, "payRate": 0.9655, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1020", "name": "Bidyadhar Chhatoi", "campus": "BBSR", "course": "APIDA", "batchYear": 202605, "batch": 202605, "batchDetails": 202605, "consultant": "Ankita", "manager": "Ajith Gopalkrishna", "leadSource": "Walk in", "tuitionFee": 295000, "committedFee": 290000, "discount": 5000, "discountRate": 0.0172, "paidAmount": 280000, "balance": 0, "balancePct": 0, "duration": 2, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.9655, "payRate": 0.9655, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1021", "name": "Ankita Sahoo", "campus": "BBSR", "course": "DA", "batchYear": 202605, "batch": 202605, "batchDetails": 202606, "consultant": "Ankita", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 177000, "committedFee": 177000, "discount": 0, "discountRate": 0, "paidAmount": 98000, "balance": 0, "balancePct": 0, "duration": 2, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.5537, "payRate": 0.5537, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1022", "name": "Soumyakanta Gouda", "campus": "BBSR", "course": "APIDS", "batchYear": 202605, "batch": 202605, "batchDetails": 202606, "consultant": "Deepali Das", "manager": "Ajith Gopalkrishna", "leadSource": "Paid Ads", "tuitionFee": 354000, "committedFee": 290000, "discount": 64000, "discountRate": 0.2207, "paidAmount": 308000, "balance": 0, "balancePct": 0, "duration": 2, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 1.0621, "payRate": 1.0621, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1023", "name": "Surekha Manjari Bhanj", "campus": "BBSR", "course": "APIDA", "batchYear": 202605, "batch": 202605, "batchDetails": 202606, "consultant": "Dev Sir", "manager": "Ajith Gopalkrishna", "leadSource": "Referral", "tuitionFee": 295000, "committedFee": 290000, "discount": 5000, "discountRate": 0.0172, "paidAmount": 205000, "balance": 45000, "balancePct": 0.1552, "duration": 2, "riskSegment": "Mid Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 1, "pendingBalance": 45000, "recoveryRate": 0.7069, "payRate": 0.7069, "balanceControlRatio": 0.2195, "finalStatus": "Pending"}, {"id": "DVA1024", "name": "Rakesh Pradhan", "campus": "BBSR", "course": "APIDS", "batchYear": 202506, "batch": 202506, "batchDetails": 202606, "consultant": "Srimanta", "manager": "Ajith Gopalkrishna", "leadSource": "Website", "tuitionFee": 354000, "committedFee": 290000, "discount": 64000, "discountRate": 0.2207, "paidAmount": 290000, "balance": 0, "balancePct": 0, "duration": 13, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 1, "payRate": 1, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1025", "name": "Sinu sukari", "campus": "BBSR", "course": "AIML", "batchYear": 202506, "batch": 202506, "batchDetails": 202507, "consultant": "Ankita", "manager": "Ajith Gopalkrishna", "leadSource": "Paid Ads", "tuitionFee": 259600, "committedFee": 250000, "discount": 9600, "discountRate": 0.0384, "paidAmount": 240000, "balance": 35000, "balancePct": 0.14, "duration": 13, "riskSegment": "Mid Risk", "defaultAccounts": 1, "defaultBalance": 35000, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.96, "payRate": 0.96, "balanceControlRatio": 0.1458, "finalStatus": "Default"}, {"id": "DVA1026", "name": "Dharam Yadav", "campus": "BLR", "course": "AIML", "batchYear": 202506, "batch": 202506, "batchDetails": 202507, "consultant": "Saroj", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 259600, "committedFee": 250000, "discount": 9600, "discountRate": 0.0384, "paidAmount": 103000, "balance": 200000, "balancePct": 0.8, "duration": 13, "riskSegment": "Critical", "defaultAccounts": 1, "defaultBalance": 200000, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.412, "payRate": 0.412, "balanceControlRatio": 1.9417, "finalStatus": "Default"}, {"id": "DVA1027", "name": "Kirti kaushal", "campus": "BLR", "course": "APIDS", "batchYear": 202507, "batch": 202507, "batchDetails": 202507, "consultant": "Saroj", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 354000, "committedFee": 290000, "discount": 64000, "discountRate": 0.2207, "paidAmount": 294998, "balance": 0, "balancePct": 0, "duration": 12, "riskSegment": "Low Risk", "defaultAccounts": 0, "defaultBalance": 0, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 1.0172, "payRate": 1.0172, "balanceControlRatio": 0, "finalStatus": "Fully Paid"}, {"id": "DVA1028", "name": "Smruti Behera", "campus": "BLR", "course": "APIDA", "batchYear": 202507, "batch": 202507, "batchDetails": 202507, "consultant": "Saroj", "manager": "Ajith Gopalkrishna", "leadSource": "Inbound Phone Call", "tuitionFee": 295000, "committedFee": 290000, "discount": 5000, "discountRate": 0.0172, "paidAmount": 105000, "balance": 175000, "balancePct": 0.6034, "duration": 12, "riskSegment": "Critical", "defaultAccounts": 1, "defaultBalance": 175000, "pendingAccounts": 0, "pendingBalance": 0, "recoveryRate": 0.3621, "payRate": 0.3621, "balanceControlRatio": 1.6667, "finalStatus": "Default"}];
+
+// Ensure sample data records have learner emails for testing
+SAMPLE_DATA.forEach(r => {
+  if (!r.email) {
+    const slugName = (r.name || 'learner').toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.|\.$/g, '');
+    r.email = `${slugName}@gmail.com`;
+  }
+});
 
 /* ============ STATE ============ */
 let RAW = JSON.parse(JSON.stringify(SAMPLE_DATA));
@@ -1679,7 +1821,9 @@ const COLUMN_MAP = {
   'balance control ratio':'balanceControlRatio','final status':'finalStatus',
   'phone':'phone','mobile':'phone','mobile number':'phone','mobile no':'phone',
   'phone number':'phone','contact number':'phone','contact no':'phone',
-  'whatsapp':'phone','whatsapp number':'phone','student mobile':'phone'
+  'whatsapp':'phone','whatsapp number':'phone','student mobile':'phone',
+  'email':'email','email id':'email','e-mail':'email','student email':'email',
+  'learner email':'email','mail':'email','email address':'email','student email id':'email'
 };
 
 function normalizeExcelDate(val){
@@ -1709,6 +1853,10 @@ function processWorkbookData(arrayBuffer, sourceName) {
           if(target) rec[target] = row[k];
         });
         if(!rec.name && !rec.course) return null; // skip junk/empty rows
+        if(!rec.email){
+          const emailKey = Object.keys(row).find(k => /email|mail/i.test(k) && !/mode/i.test(k));
+          if(emailKey && row[emailKey]) rec.email = String(row[emailKey]).trim();
+        }
         const parseMoney = v => typeof v === 'number' ? v : Number(String(v).replace(/[^0-9.-]+/g, '')) || 0;
         rec.id = rec.id || `UPL${1000+idx}`;
         rec.batch = Number(rec.batch)||rec.batch;
@@ -2069,6 +2217,379 @@ function openWhatsAppReminder(rec, btn){
   window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
   if(btn){ const original=btn.textContent; btn.textContent='Opened ✓'; setTimeout(()=>btn.textContent=original,1200); }
 }
+
+/* ============ OUTLOOK & RECOVERY EMAIL AUTOMATION ============ */
+const DEFAULT_EMAIL_SETTINGS = {
+  outlookMode: 'desktop', // 'desktop', 'web365', 'live'
+  defaultCc: 'md.sajid@dvdataanalytics.com',
+  showPreviewFirst: true,
+  subjectTemplate: 'Important: Pending Fee Recovery Notice - {name} ({id}) | DV Analytics',
+  bodyTemplate: `Dear {name},
+
+Greetings from DV Analytics.
+
+This is an important reminder regarding your enrollment in the {course} program (Student ID: {id}).
+
+According to our accounts records, there is an outstanding balance on your course fee account:
+• Course: {course}
+• Total Committed Fee: {committed_fee}
+• Amount Paid to Date: {paid_amount}
+• Pending Outstanding Balance: {balance}
+• Assigned LC Executive: {consultant}
+
+Kindly arrange the clearance of your pending fee balance at the earliest to ensure uninterrupted access to your learning portal (LMS), upcoming live sessions, assignments, and placement support.
+
+If you have already made the payment, please reply to this email with your transaction reference number or payment receipt so our accounts desk can update your records.
+
+Should you have any questions or require installment assistance, please feel free to reach out to me directly.
+
+Warm regards,
+{consultant}
+Collection & Recovery Desk
+DV Analytics | md.sajid@dvdataanalytics.com`
+};
+
+function getRecoveryEmailSettings() {
+  try {
+    const raw = localStorage.getItem('ipms_recovery_email_settings');
+    if (raw) {
+      return Object.assign({}, DEFAULT_EMAIL_SETTINGS, JSON.parse(raw));
+    }
+  } catch(e) {
+    console.warn('Could not read recovery email settings from localStorage:', e);
+  }
+  return Object.assign({}, DEFAULT_EMAIL_SETTINGS);
+}
+
+function saveRecoveryEmailSettings(settings) {
+  try {
+    localStorage.setItem('ipms_recovery_email_settings', JSON.stringify(settings));
+    return true;
+  } catch(e) {
+    console.error('Could not save recovery email settings to localStorage:', e);
+    return false;
+  }
+}
+
+function renderEmailTemplate(template, rec) {
+  if (!template) return '';
+  if (!rec) return template;
+  const todayStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).split('/').join('-');
+  const map = {
+    '{name}': rec.name || 'Learner',
+    '{id}': rec.id || '',
+    '{course}': rec.course || 'Enrolled Program',
+    '{balance}': fmtINR(rec.balance || 0),
+    '{committed_fee}': fmtINR(rec.committedFee || rec.tuitionFee || 0),
+    '{paid_amount}': fmtINR(rec.paidAmount || 0),
+    '{consultant}': rec.consultant || 'Recovery Desk',
+    '{manager}': rec.manager || 'Academic Administration',
+    '{campus}': rec.campus || 'Main Campus',
+    '{batch}': String(rec.batch || rec.batchYear || ''),
+    '{today}': todayStr
+  };
+
+  let rendered = template;
+  Object.entries(map).forEach(([tag, val]) => {
+    const re = new RegExp(tag.replace(/([{}])/g, '\\$1'), 'g');
+    rendered = rendered.replace(re, val);
+  });
+  return rendered;
+}
+
+function launchOutlook({ to, cc, subject, body, method }) {
+  const encTo = encodeURIComponent(to || '');
+  const encCc = encodeURIComponent(cc || '');
+  const encSubject = encodeURIComponent(subject || '');
+  const encBody = encodeURIComponent(body || '');
+
+  if (method === 'web365') {
+    let url = `https://outlook.office.com/mail/deeplink/compose?to=${encTo}&subject=${encSubject}&body=${encBody}`;
+    if (cc) url += `&cc=${encCc}`;
+    window.open(url, '_blank');
+  } else if (method === 'live') {
+    let url = `https://outlook.live.com/mail/0/deeplink/compose?to=${encTo}&subject=${encSubject}&body=${encBody}`;
+    if (cc) url += `&cc=${encCc}`;
+    window.open(url, '_blank');
+  } else {
+    // Desktop Outlook via mailto: protocol
+    let mailto = `mailto:${to || ''}?subject=${encSubject}&body=${encBody}`;
+    if (cc) mailto += `&cc=${encCc}`;
+    
+    const a = document.createElement('a');
+    a.href = mailto;
+    a.target = '_self';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => a.remove(), 300);
+  }
+}
+
+let activeEmailModalContext = null;
+
+function openEmailComposerModal({ rec, email, cc, subject, body, method, sourceBtn }) {
+  activeEmailModalContext = { rec, sourceBtn };
+  
+  const modal = document.getElementById('outlookEmailModal');
+  const summaryEl = document.getElementById('modalStudentSummary');
+  const subtitleEl = document.getElementById('modalStudentSubtitle');
+  const toEl = document.getElementById('modalEmailTo');
+  const ccEl = document.getElementById('modalEmailCc');
+  const subjEl = document.getElementById('modalEmailSubject');
+  const bodyEl = document.getElementById('modalEmailBody');
+  const methodEl = document.getElementById('modalOutlookMethod');
+  const statusEl = document.getElementById('modalDispatchStatus');
+
+  if (statusEl) statusEl.textContent = '';
+  
+  if (subtitleEl) subtitleEl.textContent = `${rec.name} (${rec.id}) • ${rec.course || 'Recovery Outreach'}`;
+  
+  if (summaryEl) {
+    summaryEl.innerHTML = `
+      <div><span style="color:var(--txt-faint)">Student:</span> <b style="color:var(--txt)">${esc(rec.name)}</b> <span style="color:var(--gold)">(${esc(rec.id)})</span></div>
+      <div><span style="color:var(--txt-faint)">Course:</span> <b style="color:var(--txt)">${esc(rec.course || '-')}</b></div>
+      <div><span style="color:var(--txt-faint)">Balance:</span> <b style="color:var(--red)">${fmtINR(rec.balance)}</b></div>
+      <div><span style="color:var(--txt-faint)">Executive:</span> <b style="color:var(--txt)">${esc(rec.consultant || 'Recovery Desk')}</b></div>
+      <div><span style="color:var(--txt-faint)">Risk:</span> <span class="risk-pill risk-${slug(rec.riskSegment || 'Mid Risk')}" style="padding:2px 8px;font-size:9.5px;">${esc(rec.riskSegment || 'Critical')}</span></div>
+    `;
+  }
+
+  if (toEl) toEl.value = email || '';
+  if (ccEl) ccEl.value = cc || '';
+  if (subjEl) subjEl.value = subject || '';
+  if (bodyEl) bodyEl.value = body || '';
+  if (methodEl) methodEl.value = method || 'desktop';
+
+  modal.style.display = 'flex';
+  if (toEl && !email) {
+    toEl.focus();
+  }
+}
+
+function closeEmailComposerModal() {
+  const modal = document.getElementById('outlookEmailModal');
+  if (modal) modal.style.display = 'none';
+  activeEmailModalContext = null;
+}
+
+function openOutlookEmailReminder(rec, btn) {
+  if (!rec) {
+    alert('Could not find student record.');
+    return;
+  }
+
+  const settings = getRecoveryEmailSettings();
+  let email = (rec.email || rec.mail || '').trim();
+
+  // If preview is off and email is missing, ask for it
+  if (!settings.showPreviewFirst && !email) {
+    const entered = prompt(`No email address on file for ${rec.name}.\nEnter learner's email address:`);
+    if (entered && entered.trim()) {
+      email = entered.trim();
+      rec.email = email;
+    } else {
+      return;
+    }
+  }
+
+  const subject = renderEmailTemplate(settings.subjectTemplate, rec);
+  const body = renderEmailTemplate(settings.bodyTemplate, rec);
+  const cc = settings.defaultCc || '';
+  const method = settings.outlookMode || 'desktop';
+
+  if (!settings.showPreviewFirst) {
+    launchOutlook({ to: email, cc, subject, body, method });
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = 'Sent ✓';
+      setTimeout(() => btn.textContent = orig, 1200);
+    }
+  } else {
+    openEmailComposerModal({ rec, email, cc, subject, body, method, sourceBtn: btn });
+  }
+}
+
+function populateEmailSettingsForm() {
+  const settings = getRecoveryEmailSettings();
+  const modeEl = document.getElementById('emailOutlookMode');
+  const ccEl = document.getElementById('emailDefaultCc');
+  const previewEl = document.getElementById('emailShowPreviewSwitch');
+  const subjEl = document.getElementById('emailSubjectTemplate');
+  const bodyEl = document.getElementById('emailBodyTemplate');
+
+  if (modeEl) modeEl.value = settings.outlookMode || 'desktop';
+  if (ccEl) ccEl.value = settings.defaultCc || '';
+  if (previewEl) previewEl.checked = settings.showPreviewFirst !== false;
+  if (subjEl) subjEl.value = settings.subjectTemplate || '';
+  if (bodyEl) bodyEl.value = settings.bodyTemplate || '';
+}
+
+function setupEmailAutomationListeners() {
+  const modal = document.getElementById('outlookEmailModal');
+  const btnClose = document.getElementById('btnCloseEmailModal');
+  const btnCopy = document.getElementById('btnModalCopyText');
+  const btnLaunch = document.getElementById('btnModalLaunchOutlook');
+  const statusEl = document.getElementById('modalDispatchStatus');
+
+  if (btnClose) btnClose.addEventListener('click', closeEmailComposerModal);
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeEmailComposerModal();
+    });
+  }
+
+  if (btnCopy) {
+    btnCopy.addEventListener('click', () => {
+      const subj = document.getElementById('modalEmailSubject')?.value || '';
+      const body = document.getElementById('modalEmailBody')?.value || '';
+      const fullText = `Subject: ${subj}\n\n${body}`;
+      navigator.clipboard.writeText(fullText).then(() => {
+        if (statusEl) statusEl.textContent = 'Email text copied to clipboard! ✓';
+        setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 2000);
+      }).catch(() => {
+        if (statusEl) statusEl.textContent = 'Could not copy to clipboard.';
+      });
+    });
+  }
+
+  if (btnLaunch) {
+    btnLaunch.addEventListener('click', () => {
+      const toEl = document.getElementById('modalEmailTo');
+      const ccEl = document.getElementById('modalEmailCc');
+      const subjEl = document.getElementById('modalEmailSubject');
+      const bodyEl = document.getElementById('modalEmailBody');
+      const methodEl = document.getElementById('modalOutlookMethod');
+
+      const to = (toEl?.value || '').trim();
+      const cc = (ccEl?.value || '').trim();
+      const subject = subjEl?.value || '';
+      const body = bodyEl?.value || '';
+      const method = methodEl?.value || 'desktop';
+
+      if (!to) {
+        alert('Please enter a recipient email address for this learner.');
+        if (toEl) toEl.focus();
+        return;
+      }
+
+      if (activeEmailModalContext && activeEmailModalContext.rec) {
+        activeEmailModalContext.rec.email = to;
+      }
+
+      launchOutlook({ to, cc, subject, body, method });
+
+      if (activeEmailModalContext && activeEmailModalContext.sourceBtn) {
+        const btn = activeEmailModalContext.sourceBtn;
+        const orig = btn.textContent;
+        btn.textContent = 'Sent ✓';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      }
+
+      if (statusEl) statusEl.textContent = 'Dispatched to Outlook compose! ✓';
+      setTimeout(() => {
+        closeEmailComposerModal();
+      }, 1000);
+    });
+  }
+
+  // Settings: Tag chip insert
+  let lastFocusedEl = document.getElementById('emailBodyTemplate');
+  const subjInput = document.getElementById('emailSubjectTemplate');
+  const bodyTextarea = document.getElementById('emailBodyTemplate');
+  if (subjInput) subjInput.addEventListener('focus', () => { lastFocusedEl = subjInput; });
+  if (bodyTextarea) bodyTextarea.addEventListener('focus', () => { lastFocusedEl = bodyTextarea; });
+
+  document.querySelectorAll('#templateTagChips .tag-chip').forEach(chip => {
+    chip.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tag = chip.dataset.tag;
+      const target = lastFocusedEl || bodyTextarea;
+      if (!target) return;
+      const start = target.selectionStart ?? target.value.length;
+      const end = target.selectionEnd ?? target.value.length;
+      const text = target.value;
+      target.value = text.substring(0, start) + tag + text.substring(end);
+      target.selectionStart = target.selectionEnd = start + tag.length;
+      target.focus();
+    });
+  });
+
+  // Settings: Save button
+  const btnSave = document.getElementById('btnSaveEmailSettings');
+  const saveStatusEl = document.getElementById('emailSettingsSaveStatus');
+  if (btnSave) {
+    btnSave.addEventListener('click', () => {
+      const modeEl = document.getElementById('emailOutlookMode');
+      const ccEl = document.getElementById('emailDefaultCc');
+      const previewEl = document.getElementById('emailShowPreviewSwitch');
+      const subjEl = document.getElementById('emailSubjectTemplate');
+      const bodyEl = document.getElementById('emailBodyTemplate');
+
+      const settings = {
+        outlookMode: modeEl ? modeEl.value : 'desktop',
+        defaultCc: ccEl ? ccEl.value.trim() : '',
+        showPreviewFirst: previewEl ? previewEl.checked : true,
+        subjectTemplate: subjEl ? subjEl.value : DEFAULT_EMAIL_SETTINGS.subjectTemplate,
+        bodyTemplate: bodyEl ? bodyEl.value : DEFAULT_EMAIL_SETTINGS.bodyTemplate
+      };
+
+      const ok = saveRecoveryEmailSettings(settings);
+      if (saveStatusEl) {
+        saveStatusEl.textContent = ok ? 'Outlook & Recovery Email settings saved successfully! ✓' : 'Failed to save settings.';
+        setTimeout(() => { if (saveStatusEl) saveStatusEl.textContent = ''; }, 2500);
+      }
+    });
+  }
+
+  // Settings: Reset button
+  const btnReset = document.getElementById('btnResetEmailTemplate');
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      if (confirm('Reset email template and settings back to system defaults?')) {
+        saveRecoveryEmailSettings(DEFAULT_EMAIL_SETTINGS);
+        populateEmailSettingsForm();
+        if (saveStatusEl) {
+          saveStatusEl.textContent = 'Template restored to recommended defaults. ✓';
+          setTimeout(() => { if (saveStatusEl) saveStatusEl.textContent = ''; }, 2500);
+        }
+      }
+    });
+  }
+
+  // Settings: Preview button
+  const btnPreview = document.getElementById('btnPreviewEmailTemplate');
+  if (btnPreview) {
+    btnPreview.addEventListener('click', () => {
+      const sampleStudent = RAW.find(r => Number(r.balance) > 0) || RAW[0] || {
+        name: 'Sailendra Kumar Acharya',
+        id: 'BBS202608013',
+        course: 'Gen AI & Agentic AI',
+        balance: 215000,
+        committedFee: 290000,
+        paidAmount: 75000,
+        consultant: 'Soumya',
+        manager: 'Ajith Gopalkrishna',
+        campus: 'BBSR',
+        batch: 202608,
+        email: 'sailendra.acharya@gmail.com'
+      };
+
+      const modeEl = document.getElementById('emailOutlookMode');
+      const ccEl = document.getElementById('emailDefaultCc');
+      const subjEl = document.getElementById('emailSubjectTemplate');
+      const bodyEl = document.getElementById('emailBodyTemplate');
+
+      const subject = renderEmailTemplate(subjEl?.value || DEFAULT_EMAIL_SETTINGS.subjectTemplate, sampleStudent);
+      const body = renderEmailTemplate(bodyEl?.value || DEFAULT_EMAIL_SETTINGS.bodyTemplate, sampleStudent);
+      const email = sampleStudent.email || 'learner@example.com';
+      const cc = ccEl?.value.trim() || '';
+      const method = modeEl?.value || 'desktop';
+
+      openEmailComposerModal({ rec: sampleStudent, email, cc, subject, body, method, sourceBtn: btnPreview });
+    });
+  }
+}
+
 document.getElementById('recoveryBody').addEventListener('click',e=>{
   if(!e.target.dataset.action)return;
   const label=e.target.dataset.action;
@@ -2076,6 +2597,12 @@ document.getElementById('recoveryBody').addEventListener('click',e=>{
     const id=e.target.closest('tr')?.dataset.id;
     const rec=id? RAW.find(x=>String(x.id)===String(id)) : null;
     openWhatsAppReminder(rec, e.target);
+    return;
+  }
+  if(label==='Email'){
+    const id=e.target.closest('tr')?.dataset.id;
+    const rec=id? RAW.find(x=>String(x.id)===String(id)) : null;
+    openOutlookEmailReminder(rec, e.target);
     return;
   }
   e.target.textContent=label==='Mark Paid'?'Paid ✓':'Logged ✓';setTimeout(()=>e.target.textContent=label,1000);
@@ -2089,9 +2616,12 @@ document.getElementById('reportGrid').addEventListener('click',e=>{const op=e.ta
 applyTheme(sessionStorage.getItem('ipmsTheme')||'black-gold');
 populateFilters();
 resetFilterValuesToAll();
+populateEmailSettingsForm();
+setupEmailAutomationListeners();
 try { renderAll(); } catch(e) { console.error('Init render error:', e); }
 loadLiveSheet();
 renderPaymentsLog();
 </script>
+
 </body>
 </html>
