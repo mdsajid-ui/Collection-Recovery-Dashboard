@@ -998,9 +998,7 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
           </div>
         </div>
 
-        <input type="hidden" id="emailOutlookMode" value="desktop">
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
           <div class="setting-field">
             <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Sender Account</label>
             <input type="text" id="emailSenderAccount" value="md.sajid@dvdataanalytics.com" readonly style="width:100%;padding:9px 12px;border-radius:8px;background:rgba(255,255,255,0.03);color:var(--txt-dim);border:1px solid var(--border);font-size:12.5px;cursor:not-allowed;">
@@ -1011,6 +1009,27 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
             <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Default CC (Recovery Desk / Escalations)</label>
             <input type="text" id="emailDefaultCc" placeholder="e.g. md.sajid@dvdataanalytics.com" value="md.sajid@dvdataanalytics.com" style="width:100%;padding:9px 12px;border-radius:8px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12.5px;">
             <span style="display:block;margin-top:4px;font-size:10px;color:var(--txt-faint);">Email address automatically copied on recovery follow-ups.</span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+          <div class="setting-field">
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Email Dispatch Channel</label>
+            <select id="emailOutlookMode" style="width:100%;padding:9px 12px;border-radius:8px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12.5px;">
+              <option value="web365">🌐 Outlook Web 365 (Default - No desktop popups)</option>
+              <option value="webhook">⚡ Direct Background Webhook (Silent Send via Google Sheet)</option>
+              <option value="desktop">💻 Desktop Outlook App (mailto:)</option>
+            </select>
+            <span style="display:block;margin-top:4px;font-size:10px;color:var(--txt-faint);">Web 365 prevents Chrome from repeatedly asking "Open Outlook?".</span>
+          </div>
+
+          <div class="setting-field">
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Cloud Webhook URL (For 100% Silent Send)</label>
+            <div style="display:flex;gap:6px;">
+              <input type="text" id="emailWebhookUrl" placeholder="https://script.google.com/macros/s/.../exec" style="flex:1;padding:9px 12px;border-radius:8px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12.5px;">
+              <button type="button" class="btn ripple" id="btnCopyAppsScript" style="font-size:10.5px;padding:6px 10px;white-space:nowrap;background:rgba(255,215,0,0.1);color:var(--gold);border:1px solid rgba(255,215,0,0.3);" title="Copy 1-click Google Apps Script code">📋 Apps Script</button>
+            </div>
+            <span style="display:block;margin-top:4px;font-size:10px;color:var(--txt-faint);" id="webhookNotice">Paste your Google Apps Script URL here to send emails in background without opening Outlook.</span>
           </div>
         </div>
 
@@ -1093,7 +1112,7 @@ body.theme-pure-white .kpi-value { background: none; -webkit-text-fill-color: in
             <textarea id="modalEmailBody" rows="10" style="width:100%;padding:10px;border-radius:6px;background:var(--card-2);color:var(--txt);border:1px solid var(--border);font-size:12px;line-height:1.5;font-family:var(--font-body);resize:vertical;"></textarea>
           </div>
 
-          <input type="hidden" id="modalOutlookMethod" value="desktop">
+          <input type="hidden" id="modalOutlookMethod" value="web365">
 
           <div style="display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-top:6px;">
             <button type="button" class="btn ripple" id="btnModalCopyText" style="font-size:11.5px;padding:8px 14px;">📋 Copy Text</button>
@@ -2212,7 +2231,8 @@ function openWhatsAppReminder(rec, btn){
 
 /* ============ OUTLOOK & RECOVERY EMAIL AUTOMATION ============ */
 const DEFAULT_EMAIL_SETTINGS = {
-  outlookMode: 'desktop', // 'desktop', 'web365', 'live'
+  outlookMode: 'web365', // 'web365', 'webhook', 'desktop', 'live'
+  webhookUrl: '',
   defaultCc: 'md.sajid@dvdataanalytics.com',
   showPreviewFirst: true,
   subjectTemplate: 'Important: Pending Fee Recovery Notice - {name} ({id}) | DV Analytics',
@@ -2244,6 +2264,11 @@ function getRecoveryEmailSettings() {
     if (raw) {
       const parsed = JSON.parse(raw);
       let changed = false;
+      // Auto-migrate from desktop mailto: to web365 so Chrome stops asking "Open Outlook?"
+      if (parsed.outlookMode === 'desktop') {
+        parsed.outlookMode = 'web365';
+        changed = true;
+      }
       if (parsed.bodyTemplate) {
         if (parsed.bodyTemplate.includes('Assigned LC Executive:')) {
           parsed.bodyTemplate = parsed.bodyTemplate.replace(/\n?•\s*Assigned LC Executive:[^\n]*/gi, '');
@@ -2301,31 +2326,59 @@ function renderEmailTemplate(template, rec) {
   return rendered;
 }
 
-function launchOutlook({ to, cc, subject, body, method }) {
+async function launchOutlook({ to, cc, subject, body, method, webhookUrl }) {
+  const currentSettings = getRecoveryEmailSettings();
+  const effectiveWebhook = (webhookUrl || currentSettings.webhookUrl || '').trim();
+
+  // 1. If webhook URL is set or method is 'webhook', send in background via HTTP POST!
+  if (effectiveWebhook && (method === 'webhook' || effectiveWebhook.startsWith('http'))) {
+    try {
+      const payload = {
+        to: to,
+        cc: cc || '',
+        subject: subject,
+        body: body,
+        sentAt: new Date().toISOString()
+      };
+      await fetch(effectiveWebhook, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      return { success: true, method: 'webhook' };
+    } catch (err) {
+      console.warn('Webhook dispatch failed, opening web compose fallback:', err);
+    }
+  }
+
   const encTo = encodeURIComponent(to || '');
   const encCc = encodeURIComponent(cc || '');
   const encSubject = encodeURIComponent(subject || '');
   const encBody = encodeURIComponent(body || '');
 
-  if (method === 'web365') {
-    let url = `https://outlook.office.com/mail/deeplink/compose?to=${encTo}&subject=${encSubject}&body=${encBody}`;
-    if (cc) url += `&cc=${encCc}`;
-    window.open(url, '_blank');
-  } else if (method === 'live') {
-    let url = `https://outlook.live.com/mail/0/deeplink/compose?to=${encTo}&subject=${encSubject}&body=${encBody}`;
-    if (cc) url += `&cc=${encCc}`;
-    window.open(url, '_blank');
-  } else {
-    // Desktop Outlook via mailto: protocol
+  // 2. Desktop Outlook App via mailto:
+  if (method === 'desktop') {
     let mailto = `mailto:${to || ''}?subject=${encSubject}&body=${encBody}`;
     if (cc) mailto += `&cc=${encCc}`;
-    
     const a = document.createElement('a');
     a.href = mailto;
     a.target = '_self';
     document.body.appendChild(a);
     a.click();
     setTimeout(() => a.remove(), 300);
+    return { success: true, method: 'desktop' };
+  } else if (method === 'live') {
+    let url = `https://outlook.live.com/mail/0/deeplink/compose?to=${encTo}&subject=${encSubject}&body=${encBody}`;
+    if (cc) url += `&cc=${encCc}`;
+    window.open(url, '_blank');
+    return { success: true, method: 'live' };
+  } else {
+    // 3. Default: Web 365 Outlook (Opens in browser tab - NO "Open Outlook?" desktop prompt!)
+    let url = `https://outlook.office.com/mail/deeplink/compose?to=${encTo}&subject=${encSubject}&body=${encBody}`;
+    if (cc) url += `&cc=${encCc}`;
+    window.open(url, '_blank');
+    return { success: true, method: 'web365' };
   }
 }
 
@@ -2362,7 +2415,7 @@ function openEmailComposerModal({ rec, email, cc, subject, body, method, sourceB
   if (ccEl) ccEl.value = cc || '';
   if (subjEl) subjEl.value = subject || '';
   if (bodyEl) bodyEl.value = body || '';
-  if (methodEl) methodEl.value = method || 'desktop';
+  if (methodEl) methodEl.value = method || 'web365';
 
   modal.style.display = 'flex';
   if (toEl && !email) {
@@ -2399,15 +2452,20 @@ function openOutlookEmailReminder(rec, btn) {
   const subject = renderEmailTemplate(settings.subjectTemplate, rec);
   const body = renderEmailTemplate(settings.bodyTemplate, rec);
   const cc = settings.defaultCc || '';
-  const method = settings.outlookMode || 'desktop';
+  const method = settings.outlookMode || 'web365';
+  const webhookUrl = settings.webhookUrl || '';
 
   if (!settings.showPreviewFirst) {
-    launchOutlook({ to: email, cc, subject, body, method });
     if (btn) {
-      const orig = btn.textContent;
-      btn.textContent = 'Sent ✓';
-      setTimeout(() => btn.textContent = orig, 1200);
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
     }
+    launchOutlook({ to: email, cc, subject, body, method, webhookUrl }).then(() => {
+      if (btn) {
+        btn.textContent = 'Sent ✓';
+        setTimeout(() => { btn.textContent = 'Email'; btn.disabled = false; }, 2000);
+      }
+    });
   } else {
     openEmailComposerModal({ rec, email, cc, subject, body, method, sourceBtn: btn });
   }
@@ -2416,12 +2474,14 @@ function openOutlookEmailReminder(rec, btn) {
 function populateEmailSettingsForm() {
   const settings = getRecoveryEmailSettings();
   const modeEl = document.getElementById('emailOutlookMode');
+  const webhookEl = document.getElementById('emailWebhookUrl');
   const ccEl = document.getElementById('emailDefaultCc');
   const previewEl = document.getElementById('emailShowPreviewSwitch');
   const subjEl = document.getElementById('emailSubjectTemplate');
   const bodyEl = document.getElementById('emailBodyTemplate');
 
-  if (modeEl) modeEl.value = settings.outlookMode || 'desktop';
+  if (modeEl) modeEl.value = settings.outlookMode || 'web365';
+  if (webhookEl) webhookEl.value = settings.webhookUrl || '';
   if (ccEl) ccEl.value = settings.defaultCc || '';
   if (previewEl) previewEl.checked = settings.showPreviewFirst !== false;
   if (subjEl) subjEl.value = settings.subjectTemplate || '';
@@ -2459,18 +2519,19 @@ function setupEmailAutomationListeners() {
   }
 
   if (btnLaunch) {
-    btnLaunch.addEventListener('click', () => {
+    btnLaunch.addEventListener('click', async () => {
       const toEl = document.getElementById('modalEmailTo');
       const ccEl = document.getElementById('modalEmailCc');
       const subjEl = document.getElementById('modalEmailSubject');
       const bodyEl = document.getElementById('modalEmailBody');
       const methodEl = document.getElementById('modalOutlookMethod');
+      const settings = getRecoveryEmailSettings();
 
       const to = (toEl?.value || '').trim();
       const cc = (ccEl?.value || '').trim();
       const subject = subjEl?.value || '';
       const body = bodyEl?.value || '';
-      const method = methodEl?.value || 'desktop';
+      const method = methodEl?.value || settings.outlookMode || 'web365';
 
       if (!to) {
         alert('Please enter a recipient email address for this learner.');
@@ -2484,23 +2545,56 @@ function setupEmailAutomationListeners() {
 
       btnLaunch.textContent = 'Sending...';
       btnLaunch.disabled = true;
+      if (statusEl) statusEl.textContent = 'Dispatching email...';
 
-      launchOutlook({ to, cc, subject, body, method });
+      try {
+        const res = await launchOutlook({ to, cc, subject, body, method, webhookUrl: settings.webhookUrl });
 
-      if (activeEmailModalContext && activeEmailModalContext.sourceBtn) {
-        const btn = activeEmailModalContext.sourceBtn;
-        const orig = btn.textContent;
-        btn.textContent = 'Sent ✓';
-        setTimeout(() => { btn.textContent = orig; }, 2000);
-      }
+        if (activeEmailModalContext && activeEmailModalContext.sourceBtn) {
+          const btn = activeEmailModalContext.sourceBtn;
+          btn.textContent = 'Sent ✓';
+          setTimeout(() => { btn.textContent = 'Email'; }, 2000);
+        }
 
-      btnLaunch.textContent = 'Sent ✓';
-      if (statusEl) statusEl.textContent = 'Email sent to learner! ✓';
-      setTimeout(() => {
+        btnLaunch.textContent = 'Sent ✓';
+        if (statusEl) statusEl.textContent = res && res.method === 'webhook' ? 'Email sent to learner in background! ✓' : 'Email ready in browser! ✓';
+        setTimeout(() => {
+          btnLaunch.disabled = false;
+          btnLaunch.textContent = '✉️ Send';
+          closeEmailComposerModal();
+        }, 900);
+      } catch (err) {
+        console.error('Launch error:', err);
         btnLaunch.disabled = false;
         btnLaunch.textContent = '✉️ Send';
-        closeEmailComposerModal();
-      }, 900);
+        if (statusEl) statusEl.textContent = 'Dispatch error: ' + (err.message || 'Check connection');
+      }
+    });
+  }
+
+  // Settings: Copy Apps Script helper
+  const btnCopyScript = document.getElementById('btnCopyAppsScript');
+  if (btnCopyScript) {
+    btnCopyScript.addEventListener('click', () => {
+      const scriptCode = `function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var to = data.to;
+    var cc = data.cc || "";
+    var subject = data.subject || "Important Fee Recovery Notice | DV Analytics";
+    var body = data.body || "";
+    if (!to) throw new Error("Missing recipient email");
+    MailApp.sendEmail({ to: to, cc: cc, subject: subject, body: body, name: "Team DV Analytics" });
+    return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}`;
+      navigator.clipboard.writeText(scriptCode).then(() => {
+        alert("Google Apps Script code copied to clipboard!\n\nSteps to enable 100% silent background emails:\n1. Open your live Google Sheet -> Extensions -> Apps Script.\n2. Paste this code and click Deploy -> New deployment -> Web app.\n3. Set 'Who has access' to 'Anyone' and click Deploy.\n4. Paste the Web app URL into 'Cloud Webhook URL' in Settings.\n\nThen clicking Send will deliver emails silently in the background without opening Outlook!");
+      }).catch(() => {
+        prompt("Copy this code for your Google Sheet Apps Script:", scriptCode);
+      });
     });
   }
 
@@ -2532,13 +2626,15 @@ function setupEmailAutomationListeners() {
   if (btnSave) {
     btnSave.addEventListener('click', () => {
       const modeEl = document.getElementById('emailOutlookMode');
+      const webhookEl = document.getElementById('emailWebhookUrl');
       const ccEl = document.getElementById('emailDefaultCc');
       const previewEl = document.getElementById('emailShowPreviewSwitch');
       const subjEl = document.getElementById('emailSubjectTemplate');
       const bodyEl = document.getElementById('emailBodyTemplate');
 
       const settings = {
-        outlookMode: modeEl ? modeEl.value : 'desktop',
+        outlookMode: modeEl ? modeEl.value : 'web365',
+        webhookUrl: webhookEl ? webhookEl.value.trim() : '',
         defaultCc: ccEl ? ccEl.value.trim() : '',
         showPreviewFirst: previewEl ? previewEl.checked : true,
         subjectTemplate: subjEl ? subjEl.value : DEFAULT_EMAIL_SETTINGS.subjectTemplate,
@@ -2595,7 +2691,7 @@ function setupEmailAutomationListeners() {
       const body = renderEmailTemplate(bodyEl?.value || DEFAULT_EMAIL_SETTINGS.bodyTemplate, sampleStudent);
       const email = sampleStudent.email || 'learner@example.com';
       const cc = ccEl?.value.trim() || '';
-      const method = modeEl?.value || 'desktop';
+      const method = modeEl?.value || 'web365';
 
       openEmailComposerModal({ rec: sampleStudent, email, cc, subject, body, method, sourceBtn: btnPreview });
     });
