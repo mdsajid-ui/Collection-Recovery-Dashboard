@@ -2236,16 +2236,19 @@ If you have already made the payment, please reply to this email with your trans
 Should you have any questions or require installment assistance, please feel free to reach out to me directly.
 
 Warm regards,
-{consultant}
-Collection & Recovery Desk
-DV Analytics | md.sajid@dvdataanalytics.com`
+Team DV Analytics`
 };
 
 function getRecoveryEmailSettings() {
   try {
     const raw = localStorage.getItem('ipms_recovery_email_settings');
     if (raw) {
-      return Object.assign({}, DEFAULT_EMAIL_SETTINGS, JSON.parse(raw));
+      const parsed = JSON.parse(raw);
+      if (parsed.bodyTemplate && (parsed.bodyTemplate.includes('{consultant}\nCollection & Recovery Desk') || parsed.bodyTemplate.includes('Collection & Recovery Desk'))) {
+        parsed.bodyTemplate = parsed.bodyTemplate.replace(/Warm regards,[\s\S]*?(?:DV Analytics[^\n]*|$)/i, 'Warm regards,\nTeam DV Analytics');
+        localStorage.setItem('ipms_recovery_email_settings', JSON.stringify(parsed));
+      }
+      return Object.assign({}, DEFAULT_EMAIL_SETTINGS, parsed);
     }
   } catch(e) {
     console.warn('Could not read recovery email settings from localStorage:', e);
